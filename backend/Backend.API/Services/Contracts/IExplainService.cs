@@ -1,8 +1,10 @@
 using Backend.API.DTOs;
+using Backend.Common.Models;
 
-namespace Backend.API.Services.Contracts;
-
-public interface IExplainService
+namespace Backend.API.Services.Contracts
 {
-    Task<string> Explain(PromptDto promptDto);
+    public interface IExplainService
+    {
+        Task<ExplainServiceResponse> Explain(PromptDto promptDto);
+    }
 }
