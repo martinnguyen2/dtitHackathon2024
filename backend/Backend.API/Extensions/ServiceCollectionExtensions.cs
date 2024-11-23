@@ -9,6 +9,9 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IChatPromptService, ChatPromptService>();
         services.AddScoped<IApiKeyResolverService, ApiKeyResolverService>();
+        services.AddScoped<IPromptToActionResolverService, PromptToActionResolverService>();
+        services.AddScoped<IExplainService, ExplainService>();
+        services.AddScoped<IVisualizeService, VisualizeService>();
 
         return services;
     }

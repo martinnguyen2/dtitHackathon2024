@@ -4,9 +4,9 @@
       Choose dataset
     </button>
     <ul class="dropdown-menu">
-      <li><a class="dropdown-item" >Miro Pele</a></li>
-      <li><a class="dropdown-item">Marian</a></li>
-      <li><a class="dropdown-item">Baba a dzedo</a></li>
+      @for (dataset of datasets; track $index) {
+        <li><a class="dropdown-item" >{{ dataset.name }}</a></li>
+      }
     </ul>
   </div>
 

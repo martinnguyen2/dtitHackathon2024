@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DatasetsService } from '../../services/datasets.service';
 
 @Component({
   selector: 'app-tool-bar',
@@ -7,7 +6,21 @@ import { DatasetsService } from '../../services/datasets.service';
   templateUrl: './tool-bar.component.html',
   styleUrl: './tool-bar.component.scss'
 })
-export class ToolBarComponent {
+export class ToolBarComponent implements OnInit {
+  datasets: DatasetModel[] = [];
+
+  constructor(private datasetService: DatasetService) {
+  }
+
+  ngOnInit() {
+    this.getDatasets();
+  }
+
+  getDatasets() {
+    this.datasetService.getDatasets().subscribe((datasets) => {
+      this.datasets = datasets;
+    });
+  }
 
   constructor(private datasetService: DatasetsService){}
 

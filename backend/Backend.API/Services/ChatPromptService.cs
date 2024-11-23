@@ -1,31 +1,37 @@
 using Backend.API.DTOs;
+using Backend.API.Enums;
 using Backend.API.Services.Contracts;
+using Newtonsoft.Json;
 using OpenAI.Chat;
+using Formatting = System.Xml.Formatting;
 
 namespace Backend.API.Services;
 
 public class ChatPromptService : IChatPromptService
 {
+    private readonly IExplainService _explainService;
     public IApiKeyResolverService _apiKeyResolverService { get; }
 
-    public ChatPromptService(IApiKeyResolverService apiKeyResolverService)
+    public ChatPromptService(IApiKeyResolverService apiKeyResolverService, IExplainService explainService)
     {
+        _explainService = explainService;
         _apiKeyResolverService = apiKeyResolverService;
     }
     
-    public async Task<string> Submit(PromptDto promptDto)
+    public async Task<string> Submit(PromptDto promptDto, ActionEnum action)
     {
-        var apiKey = _apiKeyResolverService.GetOpenAIKey();
-        
-        if (apiKey == null)
+        switch (action)
         {
-            throw new Exception("OpenAI API key not set in environment variables");
+            case ActionEnum.EXPLAIN:
+                return await _explainService.Explain(promptDto.Prompt);
+                break;
+            case ActionEnum.VISUALIZE:
+                // TODO
+                break;
+            default:
+                break;
         }
         
-        ChatClient client = new ChatClient(model: "gpt-4", apiKey);
-
-        var chatCompletion = await client.CompleteChatAsync($"Say reply to this prompt {promptDto.Prompt}");
-        
-        return $"{chatCompletion.Value.Content[0].Text}";
+        return "IDK what to do with this prompt";
     }
 }
