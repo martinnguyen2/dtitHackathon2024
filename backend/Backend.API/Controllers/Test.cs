@@ -1,3 +1,4 @@
+using Backend.API.Services.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,10 +8,17 @@ namespace Backend.API.Controllers
     [ApiController]
     public class Test : ControllerBase
     {
-        [HttpGet]
-        public ActionResult<string> GetTest()
+        private readonly IPythonExecuteService myPythonExecuteService;
+
+        public Test(IPythonExecuteService pythonExecuteService)
         {
-            return "Hello";
+            myPythonExecuteService = pythonExecuteService;
+        }
+        
+        [HttpGet]
+        public ActionResult<string> GetPython()
+        {
+            return myPythonExecuteService.Execute();
         }
     }
 }

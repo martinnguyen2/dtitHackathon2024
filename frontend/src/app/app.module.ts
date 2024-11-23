@@ -1,9 +1,9 @@
-import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
-import {HomeComponent} from './home/home.component';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
 import {
   BarController,
   BarElement,
@@ -18,6 +18,7 @@ import {
   Tooltip,
   Legend, PointElement,
 } from 'chart.js';
+import {provideHttpClient} from '@angular/common/http';
 
 Chart.register(PointElement, LineElement, LineController, ArcElement, PieController, BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -31,8 +32,7 @@ Chart.register(PointElement, LineElement, LineController, ArcElement, PieControl
     AppRoutingModule,
     HomeComponent,
   ],
-  providers: [],
+  providers: [provideHttpClient()],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule { }

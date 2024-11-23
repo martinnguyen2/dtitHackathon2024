@@ -1,4 +1,6 @@
 using Backend.API.Extensions;
+using Backend.API.Services;
+using Backend.API.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.RegisterServices();
+
+builder.Services.AddScoped<IPythonExecuteService, PythonExecuteService>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy  =>
+        {
+            policy.AllowAnyOrigin();
+            policy.AllowAnyHeader();
+            policy.AllowAnyMethod();
+        }
+    );
+});
 
 var app = builder.Build();
 
@@ -23,5 +39,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();
