@@ -14,6 +14,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { provideHttpClient } from '@angular/common/http';
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 
@@ -26,7 +27,7 @@ Chart.register(BarController, BarElement, CategoryScale, LinearScale, Title, Too
     AppRoutingModule,
     HomeComponent,
   ],
-  providers: [],
+  providers: [provideHttpClient()],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
