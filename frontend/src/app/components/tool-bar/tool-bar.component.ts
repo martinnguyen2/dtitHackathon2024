@@ -25,7 +25,7 @@ export class ToolBarComponent implements OnInit {
 
   public onFileSelected(event : any){
 
-    const file:File = event.target.files[0];
+    const file : File = event.target.files[0];
     if(!file)
       return;
 
