@@ -10,20 +10,27 @@ import { DatasetsService } from '../../services/datasets.service';
 })
 export class ToolBarComponent implements OnInit {
   datasets: DatasetModel[] = [];
+  selectedDataset: DatasetModel | undefined;
+
+  constructor(private datasetsService: DatasetsService) {
+  }
 
   ngOnInit() {
     this.getDatasets();
   }
 
   getDatasets() {
-    this.datasetService.getDatasets().subscribe((datasets) => {
+    this.datasetsService.getDatasets().subscribe((datasets) => {
       this.datasets = datasets;
     });
   }
 
-  constructor(private datasetService: DatasetsService){}
+  setDataset(dataset: DatasetModel) {
+    this.datasetsService.setDataset(dataset);
+    this.selectedDataset = dataset;
+  }
 
-  public onFileSelected(event : any){
+  onFileSelected(event : any){
 
     const file:File = event.target.files[0];
     if(!file)
@@ -33,7 +40,7 @@ export class ToolBarComponent implements OnInit {
 
     dataToSend.append("file",file)
 
-    this.datasetService.postDataset(dataToSend).subscribe(
+    this.datasetsService.postDataset(dataToSend).subscribe(
       next => console.log(next)
     );
   }

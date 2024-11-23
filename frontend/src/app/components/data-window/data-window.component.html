@@ -1,4 +1,10 @@
-<div class="window d-flex">
-  <app-text-output class="text-output h-100"></app-text-output>
-  <app-visualized-data class="chart h-100"></app-visualized-data>
-</div>
+@if (dataset) {
+  <div class="window d-flex bg-primary-dark">
+    <app-text-output class="text-output h-100"></app-text-output>
+    <app-visualized-data class="chart h-100"></app-visualized-data>
+  </div>
+} @else {
+  <div class="window d-flex justify-content-center align-items-center bg-secondary-light">
+    <h3 class="text">For using prompt input, please select dataset</h3>
+  </div>
+}

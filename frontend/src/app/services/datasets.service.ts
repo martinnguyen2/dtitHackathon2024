@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { environment } from '../../enviroments/environment';
 import { DatasetModel } from '../models/dataset.model';
 
@@ -8,7 +8,8 @@ import { DatasetModel } from '../models/dataset.model';
   providedIn: 'root'
 })
 export class DatasetsService {
-
+  private selectedDataset = new ReplaySubject<DatasetModel>(1);
+  selectedDataset$ = this.selectedDataset.asObservable();
   constructor(private http: HttpClient) { }
 
   public getDatasets():Observable<DatasetModel[]> {
@@ -19,7 +20,7 @@ export class DatasetsService {
     return this.http.post<string>(environment.baseUrl + "/api/Datasets", input)
   }
 
-  public getDataSet(){
-
+  setDataset(dataset: DatasetModel) {
+    this.selectedDataset.next(dataset);
   }
 }
