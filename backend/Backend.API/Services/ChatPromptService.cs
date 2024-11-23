@@ -1,10 +1,7 @@
 using Backend.API.DTOs;
 using Backend.API.Enums;
 using Backend.API.Services.Contracts;
-using Newtonsoft.Json;
-using OpenAI.Chat;
-using Formatting = System.Xml.Formatting;
-
+using Backend.Common.Models;
 namespace Backend.API.Services;
 
 public class ChatPromptService : IChatPromptService
@@ -18,7 +15,7 @@ public class ChatPromptService : IChatPromptService
         _apiKeyResolverService = apiKeyResolverService;
     }
     
-    public async Task<string> Submit(PromptDto promptDto, ActionEnum action)
+    public async Task<ExplainServiceResponse> Submit(PromptDto promptDto, ActionEnum action)
     {
         switch (action)
         {
@@ -31,6 +28,10 @@ public class ChatPromptService : IChatPromptService
                 break;
         }
         
-        return "IDK what to do with this prompt";
+        return new ExplainServiceResponse()
+        {
+            TextOutput = "IDK what to do with this prompt",
+            CacheId = "-1"
+        };
     }
 }

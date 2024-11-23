@@ -1,6 +1,7 @@
 using Backend.API.DTOs;
 using Backend.API.Enums;
 using Backend.API.Services.Contracts;
+using Backend.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.API.Controllers
@@ -19,7 +20,7 @@ namespace Backend.API.Controllers
         }
         
         [HttpPost("submit")]
-        public async Task<ActionResult<string>> SubmitPrompt(PromptDto promptDto) 
+        public async Task<ActionResult<ExplainServiceResponse>> SubmitPrompt(PromptDto promptDto) 
         {
             if (promptDto == null) 
             {
