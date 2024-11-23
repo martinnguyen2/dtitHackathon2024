@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.RegisterServices();
 
 builder.Services.AddScoped<IPythonExecuteService, PythonExecuteService>();
+builder.Services.AddScoped<IGraphService, GraphService>();
 
 builder.Services.AddCors(options =>
 {
