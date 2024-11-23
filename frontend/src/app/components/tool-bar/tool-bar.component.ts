@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DatasetService } from '../../services/dataset.service';
 import { DatasetModel } from '../../models/dataset.model';
+import { DatasetsService } from '../../services/datasets.service';
 
 @Component({
   selector: 'app-tool-bar',
@@ -12,7 +12,7 @@ export class ToolBarComponent implements OnInit {
   datasets: DatasetModel[] = [];
   selectedDataset: DatasetModel | undefined;
 
-  constructor(private datasetService: DatasetService) {
+  constructor(private datasetsService: DatasetsService) {
   }
 
   ngOnInit() {
@@ -20,13 +20,13 @@ export class ToolBarComponent implements OnInit {
   }
 
   getDatasets() {
-    this.datasetService.getDatasets().subscribe((datasets) => {
+    this.datasetsService.getDatasets().subscribe((datasets) => {
       this.datasets = datasets;
     });
   }
 
   setDataset(dataset: DatasetModel) {
-    this.datasetService.setDataset(dataset);
+    this.datasetsService.setDataset(dataset);
     this.selectedDataset = dataset;
   }
 
@@ -40,7 +40,7 @@ export class ToolBarComponent implements OnInit {
 
     dataToSend.append("file",file)
 
-    this.datasetService.postDataset(dataToSend).subscribe(
+    this.datasetsService.postDataset(dataToSend).subscribe(
       next => console.log(next)
     );
   }
