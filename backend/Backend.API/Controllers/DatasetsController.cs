@@ -29,16 +29,32 @@ namespace Backend.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> PostDataset(IFormFile file)
+        public ActionResult<ResponseMessage> PostDataset(IFormFile file)
         {
             FileUploadResponse response = UploadHandler.Upload(file);
 
             if (response.Status == FileUploadResponse.StatusEnum.Error)
             {
-                return BadRequest(response.Text);
+                return BadRequest(
+                    new ResponseMessage()
+                    {
+                        Message = response.Text
+                    }
+                );
             }
 
-            return Ok(response.Text);
+            
+            return Ok(
+                new ResponseMessage()
+                {
+                    Message = response.Text
+                }
+            );
+        }
+
+        public class ResponseMessage()
+        {
+            public required string Message { get; set; }
         }
     }
 }
