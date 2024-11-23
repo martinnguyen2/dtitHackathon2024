@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{293F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend.API", "backend\Backend.API\Backend.API.csproj", "{C3817CD7-5E77-4242-807C-B4C9CABB3FA0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend.Common", "backend\Backend.Common\Backend.Common.csproj", "{217A03EC-8F47-426A-A5DB-E99CBF686C60}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +22,13 @@ Global
 		{C3817CD7-5E77-4242-807C-B4C9CABB3FA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3817CD7-5E77-4242-807C-B4C9CABB3FA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3817CD7-5E77-4242-807C-B4C9CABB3FA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{217A03EC-8F47-426A-A5DB-E99CBF686C60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{217A03EC-8F47-426A-A5DB-E99CBF686C60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{217A03EC-8F47-426A-A5DB-E99CBF686C60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{217A03EC-8F47-426A-A5DB-E99CBF686C60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C3817CD7-5E77-4242-807C-B4C9CABB3FA0} = {293F91C6-739C-4E30-AB95-D7CF7A047C7C}
+		{217A03EC-8F47-426A-A5DB-E99CBF686C60} = {293F91C6-739C-4E30-AB95-D7CF7A047C7C}
 	EndGlobalSection
 EndGlobal
