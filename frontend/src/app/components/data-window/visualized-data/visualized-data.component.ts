@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
 import {ChartData, ChartOptions} from 'chart.js';
 import {ChartjsComponent, ChartjsModule} from '@ctrl/ngx-chartjs';
 import { DatasetsService } from '../../../services/datasets.service.js';
@@ -10,11 +10,24 @@ import { GraphData } from '../../../models/graph-data.model.js';
   selector: 'app-visualized-data',
   imports: [ChartjsModule, ChartjsModule],
   templateUrl: './visualized-data.component.html',
-  styleUrl: './visualized-data.component.scss'
+  styleUrl: './visualized-data.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VisualizedDataComponent implements OnInit{
   @ViewChild('graphId', { static: true }) graphElement!: ChartjsComponent;
-  data: ChartData = this.getDataState();
+  @Input() set graphData(data: GraphData[]){
+    this.values = data.map(item => +item.value);
+    this.labels = data.map(item => item.label);
+  };
+
+  labels: string[] = [];
+  values: number[] = [];
+  private _data: GraphData[] = [];
+
+  get graphData(): GraphData[]{
+    return this._data;
+  }
+
   options: ChartOptions = {
     responsive: true,
     plugins: {
@@ -36,18 +49,17 @@ export class VisualizedDataComponent implements OnInit{
    ))
   }
 
-  
-
-  getDataState(): ChartData{
+  get dataState(): ChartData{
     return {
-      labels: ["green","red","Blue"],
+      labels: this.labels,
       datasets: [
         {
           label: 'Dataset 1',
-          data: [100,200,300],
+          data: this.values,
           backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
         },
       ],
     };
   }
+
 }
