@@ -1,4 +1,4 @@
-using Backend.API.Models;
+using Backend.Common.Models;
 
 namespace Backend.API.Services.Contracts
 {
