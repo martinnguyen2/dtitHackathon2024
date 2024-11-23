@@ -3,7 +3,6 @@ import {ChartData, ChartOptions} from 'chart.js';
 import {ChartjsComponent, ChartjsModule} from '@ctrl/ngx-chartjs';
 import { DatasetsService } from '../../../services/datasets.service.js';
 import { ChatQueryService } from '../../../services/chat-query.service.js';
-import { GraphData } from '../../../models/graph-data.model.js';
 
 
 @Component({
