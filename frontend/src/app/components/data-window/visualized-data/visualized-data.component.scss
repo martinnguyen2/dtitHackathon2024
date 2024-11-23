@@ -1,0 +1,12 @@
+@import '../../../../styles.scss';
+
+.content {
+  background-color: white;
+  border-radius: 18px;
+  padding: 20px 40px;
+
+  .title {
+    font-weight: 700;
+    color: $primary-color-dark;
+  }
+}

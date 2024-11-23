@@ -1,4 +1,5 @@
 using Backend.Common.Models;
+using Backend.Common.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.API.Controllers
@@ -16,7 +17,7 @@ namespace Backend.API.Controllers
 
             foreach (string file in files)
             {
-                ResponseDataset dataset = new()
+                ResponseDataset dataset = new ResponseDataset
                 {
                     Name = Path.GetFileNameWithoutExtension(file)
                 };
@@ -25,6 +26,19 @@ namespace Backend.API.Controllers
             }
             
             return datasets;
+        }
+
+        [HttpPost]
+        public ActionResult<string> PostDataset(IFormFile file)
+        {
+            FileUploadResponse response = UploadHandler.Upload(file);
+
+            if (response.Status == FileUploadResponse.StatusEnum.Error)
+            {
+                return BadRequest(response.Text);
+            }
+
+            return Ok(response.Text);
         }
     }
 }
