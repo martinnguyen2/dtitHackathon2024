@@ -1,4 +1,5 @@
 using Backend.API.DTOs;
+using Backend.API.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.API.Controllers
@@ -7,21 +8,22 @@ namespace Backend.API.Controllers
     [ApiController]
     public class ChatPromptController : ControllerBase
     {
+        private readonly IChatPromptService _chatPromptService;
+
+        public ChatPromptController(IChatPromptService chatPromptService)
+        {
+            _chatPromptService = chatPromptService;
+        }
+        
         [HttpPost("submit")]
         public ActionResult<string> SubmitPrompt(PromptDto promptDto) 
         {
-            /* in body
-            obj: {
-                public string prompt {get; set;}
-            }
-            */ 
-
             if (promptDto == null) 
             {
                 return BadRequest();
             }
             
-            return promptDto.Prompt;
+            return _chatPromptService.Submit(promptDto);
         }
     }
 }
