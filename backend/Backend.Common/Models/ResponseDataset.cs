@@ -1,19 +1,18 @@
-using System;
-
-namespace Backend.Common.Models;
-
-public class ResponseDataset
+namespace Backend.Common.Models
 {
-    private string myName;
-
-    public required string Name
+    public class ResponseDataset
     {
-        get { return myName; }
-        set { myName = value; }
-    }
+        private string myName;
 
-    public ResponseDataset()
-    {
-        myName = string.Empty;
+        public required string Name
+        {
+            get { return myName; }
+            set { myName = value; }
+        }
+
+        public ResponseDataset()
+        {
+            myName = string.Empty;
+        }
     }
 }

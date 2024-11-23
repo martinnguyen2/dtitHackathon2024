@@ -1,25 +1,26 @@
-namespace Backend.Common.Models;
-
-public class Dataset
+namespace Backend.Common.Models
 {
-    private string myName;
-    private string myPath;
-
-    public required string Name
+    public class Dataset
     {
-        get { return myName; }
-        set { myName = value; }
-    }
+        private string myName;
+        private string myPath;
 
-    public required string Path
-    {
-        get { return myPath; }
-        set { myPath = value; }
-    }
+        public required string Name
+        {
+            get { return myName; }
+            set { myName = value; }
+        }
 
-    public Dataset()
-    {
-        myName = string.Empty;
-        myPath = string.Empty;
+        public required string Path
+        {
+            get { return myPath; }
+            set { myPath = value; }
+        }
+
+        public Dataset()
+        {
+            myName = string.Empty;
+            myPath = string.Empty;
+        }
     }
 }
