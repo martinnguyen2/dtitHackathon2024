@@ -8,5 +8,8 @@ python main.py --dataset_path "D:\\dtitHackathon2024\\data\\02_un_data\\SYB66_20
 
 python main.py --dataset_path "D:\\dtitHackathon2024\\data\\02_un_data\\SYB66_200_202310_Employment.csv" --prompt "So what are examples of regions?" --cacheId "1"
 
+python main.py --dataset_path "D:\\dtitHackathon2024\\data\\02_un_data\\SYB66_200_202310_Employment.csv" --action visualize
+
+
 --
 pip freeze > requirements.txt

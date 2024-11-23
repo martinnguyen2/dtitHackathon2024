@@ -2,6 +2,32 @@ import openai
 import os
 import json
 
+def raw_chat_with_gpt_without_cache(context, user_input):
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise EnvironmentError("OPENAI_API_KEY environment variable not set")
+    
+    openai.api_key = api_key
+
+    messages = []
+    messages.append({"role": "system", "content": f"Relevant context: {context}"})
+    messages.append({"role": "user", "content": user_input})
+
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-4",
+            messages=messages,
+            temperature=0.5,
+        )
+
+        qa_res = response.choices[0].message.content.strip()
+        messages.append({"role": "assistant", "content": qa_res})
+
+        return qa_res
+
+    except openai.error.OpenAIError as e:
+        print(f"Error in generating response: {e}")
+
 def chat_with_gpt(context, user_input, cacheId=None):
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
