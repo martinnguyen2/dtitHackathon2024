@@ -1,20 +1,25 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {HomeComponent} from './home/home.component';
 import {
   BarController,
   BarElement,
+  PieController,
+  ArcElement,
   Chart,
+  LineElement,
+  LineController,
   CategoryScale,
   LinearScale,
   Title,
   Tooltip,
-  Legend,
+  Legend, PointElement,
 } from 'chart.js';
-Chart.register(BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
+
+Chart.register(PointElement, LineElement, LineController, ArcElement, PieController, BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 
 @NgModule({
@@ -29,4 +34,5 @@ Chart.register(BarController, BarElement, CategoryScale, LinearScale, Title, Too
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
