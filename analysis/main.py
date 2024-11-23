@@ -31,6 +31,7 @@ def main():
     parser.add_argument('--dataset_path', type=str, help='Path to the dataset')
     parser.add_argument('--prompt', type=str, help='Prompt for the discussion')
     parser.add_argument('--cacheId', type=str, help='Cache ID for message history', default=None)
+    parser.add_argument('--isExpert', type=bool, help='Indicate if the user is an expert', default=False)
     
     args = parser.parse_args()
     
@@ -43,13 +44,16 @@ def main():
     elif args.action == 'explain':
         try:
             df = pd.read_csv(args.dataset_path, encoding='latin1')
-            context = "Explain what this dataset is about "
+            if args.isExpert:
+                context = "The user that queries this is expert and understands data. "
+            else:
+                context = "The user that queries this is not an expert and does not actually understand data, so explain as for a non-expert. "
+            context += "The dataset name is {args.dataset_path}. Explain what this dataset is about "
             df_head = df.head(100)
             csv_content = df_head.to_csv(index=False)
             user_input = f"{csv_content}"
             response = chat_with_gpt(context, user_input)
 
-            print(response)
             return response
         except UnicodeDecodeError as e:
             print(f"Error reading the CSV file: {e}")
