@@ -40,7 +40,7 @@ export class ToolBarComponent implements OnInit {
 
     dataToSend.append("file",file)
 
-    this.datasetService.postDataset(dataToSend).subscribe(
+    this.datasetsService.postDataset(dataToSend).subscribe(
       response => console.log(response),
       error =>  console.log(error.error.message)
     );
