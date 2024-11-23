@@ -1,16 +1,29 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../enviroments/environment.js';
+import { ChatQueryModel } from '../models/chat-query.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatQueryService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
-  public postQuery(input : string) : Observable<string>{
-    return this.http.post<string>(environment.baseUrl + "/api/ChatPrompt/submit",{"prompt" : input});
+  postQuery(prompt: string, datasetName: string) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'text/plain',
+    });
+
+    const body = {
+      prompt: prompt,
+      dataset: {
+        name: datasetName,
+      },
+    };
+    return this.http.post(environment.baseUrl + "/api/ChatPrompt/submit", body, {headers, responseType: 'text'});
   }
 }

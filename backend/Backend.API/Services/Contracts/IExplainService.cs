@@ -1,6 +1,10 @@
-namespace Backend.API.Services.Contracts;
+using Backend.API.DTOs;
+using Backend.Common.Models;
 
-public interface IExplainService
+namespace Backend.API.Services.Contracts
 {
-    Task<string> Explain(string userPrompt);
+    public interface IExplainService
+    {
+        Task<ExplainServiceResponse> Explain(PromptDto promptDto);
+    }
 }

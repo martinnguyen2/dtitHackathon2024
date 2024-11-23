@@ -7,13 +7,13 @@ namespace Backend.API.Services
     {
         private string myScriptsFolder = Path.Combine(AppContext.BaseDirectory, "analysis");
 
-        public string Execute(string script="main.py", string arguments="")
+        public async Task<string> Execute(string script="main.py", string arguments="")
         {
             string executablePath = OperatingSystem.IsWindows() ? "python.exe" : "python3";
             string path = Path.Combine(myScriptsFolder, script);
 
             Process process = new Process();
-            process.StartInfo = new ProcessStartInfo(executablePath, path)
+            process.StartInfo = new ProcessStartInfo(executablePath)
             {
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
@@ -21,15 +21,19 @@ namespace Backend.API.Services
             };
             process.StartInfo.EnvironmentVariables["OPENAI_API_KEY"] = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
 
-            if (arguments != string.Empty)
+            if (arguments == string.Empty)
             {
-                process.StartInfo.Arguments = arguments;
+                process.StartInfo.Arguments = path;
+            }
+            else
+            {
+                process.StartInfo.Arguments = path + " " + arguments;
             }
 
             process.Start();
 
             string output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
+            await process.WaitForExitAsync();
 
             return output;
         }
