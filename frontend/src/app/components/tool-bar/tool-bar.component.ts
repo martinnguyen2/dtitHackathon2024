@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { DatasetService } from '../../services/dataset.service';
 import { DatasetModel } from '../../models/dataset.model';
-import { DatasetsService } from '../../services/datasets.service';
 
 @Component({
   selector: 'app-tool-bar',
@@ -10,6 +10,10 @@ import { DatasetsService } from '../../services/datasets.service';
 })
 export class ToolBarComponent implements OnInit {
   datasets: DatasetModel[] = [];
+  selectedDataset: DatasetModel | undefined;
+
+  constructor(private datasetService: DatasetService) {
+  }
 
   ngOnInit() {
     this.getDatasets();
@@ -21,9 +25,12 @@ export class ToolBarComponent implements OnInit {
     });
   }
 
-  constructor(private datasetService: DatasetsService){}
+  setDataset(dataset: DatasetModel) {
+    this.datasetService.setDataset(dataset);
+    this.selectedDataset = dataset;
+  }
 
-  public onFileSelected(event : any){
+  onFileSelected(event : any){
 
     const file:File = event.target.files[0];
     if(!file)
