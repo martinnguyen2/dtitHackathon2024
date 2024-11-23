@@ -26,6 +26,7 @@ export class QueryBarComponent implements OnInit {
   selectedDataset: DatasetModel | undefined;
   isDatasetSelected = false;
   cacheId = '';
+  isSimplifiedAnswer = false;
 
   constructor(private chatQuery: ChatQueryService, private datasetsService: DatasetsService) {
   }
@@ -47,6 +48,7 @@ export class QueryBarComponent implements OnInit {
       prompt: this.textAreaInput,
       dataset: this.selectedDataset!,
       cacheId: this.cacheId,
+      isExpert: !this.isSimplifiedAnswer
     }
     this.chatQuery.postQuery(chatQuery).subscribe((response) => {
         this.cacheId = response.cacheId;

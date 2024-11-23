@@ -1,7 +1,7 @@
 <div class="input-wrapper d-flex justify-content-center w-75 align-items-center mx-auto my-3 px-3 py-3">
-    <div class="checkbox-wrapper mx-2 d-flex">
-        <input #cepesne type="checkbox">
-        <label class="" for="cepesne">Simplify answer</label>
+    <div class="checkbox-wrapper px-3 d-flex">
+        <input type="checkbox" [(ngModel)]="isSimplifiedAnswer">
+        <label>Simplify answer</label>
     </div>
     <textarea [(ngModel)]="textAreaInput" #query aria-setsize="auto" class="w-100 border-0 bg-transparent"
             placeholder="Write your query here" [disabled]="!isDatasetSelected" [ngClass]="isDatasetSelected ? '' : 'disabled-input'"></textarea>
