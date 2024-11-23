@@ -7,15 +7,20 @@ import { HomeComponent } from './home/home.component';
 import {
   BarController,
   BarElement,
+  PieController,
+  ArcElement,
   Chart,
+  LineElement,
+  LineController,
   CategoryScale,
   LinearScale,
   Title,
   Tooltip,
-  Legend,
+  Legend, PointElement,
 } from 'chart.js';
-import { provideHttpClient } from '@angular/common/http';
-Chart.register(BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
+import {provideHttpClient} from '@angular/common/http';
+
+Chart.register(PointElement, LineElement, LineController, ArcElement, PieController, BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 
 @NgModule({
