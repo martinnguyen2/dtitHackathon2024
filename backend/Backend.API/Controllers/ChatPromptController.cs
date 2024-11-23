@@ -16,14 +16,14 @@ namespace Backend.API.Controllers
         }
         
         [HttpPost("submit")]
-        public ActionResult<string> SubmitPrompt(PromptDto promptDto) 
+        public async Task<ActionResult<string>> SubmitPrompt(PromptDto promptDto) 
         {
             if (promptDto == null) 
             {
                 return BadRequest();
             }
             
-            return _chatPromptService.Submit(promptDto);
+            return await _chatPromptService.Submit(promptDto);
         }
     }
 }
