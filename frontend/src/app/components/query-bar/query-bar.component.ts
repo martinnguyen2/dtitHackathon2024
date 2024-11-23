@@ -4,6 +4,8 @@ import { ChatQueryService } from '../../services/chat-query.service';
 import { FormsModule } from '@angular/forms';
 import { DatasetsService } from '../../services/datasets.service';
 import { NgClass } from '@angular/common';
+import { DatasetModel } from '../../models/dataset.model';
+import { ChatQueryModel } from '../../models/chat-query.model';
 
 @Component({
   selector: 'app-query-bar',
@@ -21,6 +23,7 @@ export class QueryBarComponent implements OnInit {
   @ViewChild('query') elRef: ElementRef | undefined;
 
   public textAreaInput: string = "";
+  selectedDataset: DatasetModel | undefined;
   isDatasetSelected = false;
 
   constructor(private chatQuery: ChatQueryService, private datasetsService: DatasetsService) {
@@ -28,7 +31,7 @@ export class QueryBarComponent implements OnInit {
 
   ngOnInit() {
     this.datasetsService.selectedDataset$.subscribe((dataset) => {
-      console.log(dataset);
+      this.selectedDataset = dataset;
       this.isDatasetSelected = !!dataset;
     });
   }
@@ -39,8 +42,6 @@ export class QueryBarComponent implements OnInit {
   }
 
   sendQuery() {
-    this.chatQuery.postQuery(this.textAreaInput).subscribe(
-      response => console.log(response)
-    )
+    this.chatQuery.postQuery( this.textAreaInput,  this.selectedDataset?.name!).subscribe();
   }
 }
