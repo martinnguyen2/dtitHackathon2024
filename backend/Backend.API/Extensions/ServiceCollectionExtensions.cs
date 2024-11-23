@@ -8,6 +8,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection RegisterServices(this IServiceCollection services)
     {
         services.AddScoped<IChatPromptService, ChatPromptService>();
+        services.AddScoped<IApiKeyResolverService, ApiKeyResolverService>();
 
         return services;
     }
