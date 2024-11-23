@@ -1,0 +1,21 @@
+@import '../../../styles.scss';
+
+.toolbar {
+  font-weight: 600;
+  border-radius: 18px;
+  background-color: $secondary-color ;
+}
+
+.btn {
+  border-radius: 20px!important;
+  width: 200px;
+}
+
+.btn-pink {
+  color: white;
+  background-color: $primary-color-dark;
+}
+
+.btn-white {
+  background-color: white;
+}
