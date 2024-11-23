@@ -8,3 +8,16 @@ $primary-color-dark: #cf2d73;
 
 $secondary-color: #f0f0f0;
 $secondary-color-dark:#bfbfbf ;
+
+.clickable {
+    cursor: pointer;
+}
+
+
+.bg-primary-dark {
+    background-color: $primary-color-dark;
+}
+
+.bg-secondary-light{
+    background-color: $secondary-color;
+}
