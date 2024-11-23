@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild, viewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
@@ -9,4 +9,16 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class QueryBarComponent {
 
+  @HostListener(':input')
+  onInput() {
+    this.resizeTextArea();
+  }
+  @ViewChild('query') elRef : ElementRef | undefined;
+
+  constructor(){}
+
+  resizeTextArea(){
+    this.elRef!.nativeElement.style.height = '0';
+    this.elRef!.nativeElement.style.height = this.elRef!.nativeElement.scrollHeight + 'px';
+  }
 }
