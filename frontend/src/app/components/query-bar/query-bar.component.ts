@@ -28,6 +28,8 @@ export class QueryBarComponent {
 
   sendQuery(){
     console.log(this.textAreaInput)
-    this.chatQuery.postQuery(this.textAreaInput).subscribe(response=> console.log(response))
+    this.chatQuery.postQuery(this.textAreaInput).subscribe(
+      response=> console.log(response)
+    )
   }
 }

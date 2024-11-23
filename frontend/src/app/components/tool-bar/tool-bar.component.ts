@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { DatasetService } from '../../services/dataset.service';
-import { DatasetModel } from '../../models/dataset.model';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-tool-bar',
@@ -24,4 +22,20 @@ export class ToolBarComponent implements OnInit {
     });
   }
 
+  constructor(private datasetService: DatasetsService){}
+
+  public onFileSelected(event : any){
+
+    const file:File = event.target.files[0];
+    if(!file)
+      return;
+
+    const dataToSend = new FormData()
+
+    dataToSend.append("file",file)
+
+    this.datasetService.postDataset(dataToSend).subscribe(
+      next => console.log(next)
+    );
+  }
 }
