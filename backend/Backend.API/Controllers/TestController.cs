@@ -27,11 +27,5 @@ namespace Backend.API.Controllers
 
             return Ok(result);
         }
-
-        [HttpGet]
-        public ActionResult<string> GetPython()
-        {
-            return myPythonExecuteService.Execute();
-        }
     }
 }

@@ -25,7 +25,6 @@ namespace Backend.API.Services
                 using (var httpClient = new HttpClient())
                 {
                     var response = await httpClient.GetAsync(url);
-                    // response.EnsureSuccessStatusCode();
                     string jsonResponse = await response.Content.ReadAsStringAsync();
 
                     // deserialize response
