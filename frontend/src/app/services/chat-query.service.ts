@@ -14,6 +14,11 @@ export class ChatQueryService {
   }
 
   postQuery(query: ChatQueryModel): Observable<ChatQueryResponseModel> {
-    return this.http.post<ChatQueryResponseModel>(environment.baseUrl + "/api/ChatPrompt/submit", query);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'text/plain',
+    });
+
+    return this.http.post<ChatQueryResponseModel>(environment.baseUrl + "/api/ChatPrompt/submit", query, { headers });
   }
 }
