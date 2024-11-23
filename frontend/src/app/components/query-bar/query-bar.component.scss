@@ -1,2 +1,15 @@
-@import "../../../styles.scss"
+@import "../../../styles.scss";
 
+.input-wrapper {
+    position: relative;
+    background-color: $secondary-color;
+    
+    input{
+        
+    }
+
+    button{
+        background-color: $primary-color;
+        margin-right: 1rem !important; 
+    }
+}
