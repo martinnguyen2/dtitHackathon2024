@@ -1,7 +1,7 @@
 @if (dataset) {
   <div class="window d-flex bg-primary-dark">
     <app-text-output class="text-output h-100"></app-text-output>
-    <app-visualized-data class="chart h-100"></app-visualized-data>
+    <app-visualized-data [graphData]="graphData" class="chart h-100"></app-visualized-data>
   </div>
 } @else {
   <div class="window d-flex justify-content-center align-items-center bg-secondary-light">
