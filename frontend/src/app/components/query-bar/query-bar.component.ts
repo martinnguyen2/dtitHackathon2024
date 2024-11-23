@@ -25,6 +25,7 @@ export class QueryBarComponent implements OnInit {
   public textAreaInput: string = "";
   selectedDataset: DatasetModel | undefined;
   isDatasetSelected = false;
+  cacheId = '';
 
   constructor(private chatQuery: ChatQueryService, private datasetsService: DatasetsService) {
   }
@@ -42,6 +43,13 @@ export class QueryBarComponent implements OnInit {
   }
 
   sendQuery() {
-    this.chatQuery.postQuery( this.textAreaInput,  this.selectedDataset?.name!).subscribe();
+    const chatQuery: ChatQueryModel = {
+      prompt: this.textAreaInput,
+      dataset: this.selectedDataset!,
+      cacheId: this.cacheId,
+    }
+    this.chatQuery.postQuery(chatQuery).subscribe((response) => {
+        this.cacheId = response.cacheId;
+    });
   }
 }

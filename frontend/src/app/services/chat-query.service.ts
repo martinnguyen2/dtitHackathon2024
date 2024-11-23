@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../enviroments/environment.js';
 import { ChatQueryModel } from '../models/chat-query.model';
+import { ChatQueryResponseModel } from '../models/chat-query-response.model';
 import { GraphData } from '../models/graph-data.model.js';
 
 @Injectable({
@@ -13,19 +14,13 @@ export class ChatQueryService {
   constructor(private http: HttpClient) {
   }
 
-  postQuery(prompt: string, datasetName: string) {
+  postQuery(query: ChatQueryModel): Observable<ChatQueryResponseModel> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'text/plain',
     });
 
-    const body = {
-      prompt: prompt,
-      dataset: {
-        name: datasetName,
-      },
-    };
-    return this.http.post(environment.baseUrl + "/api/ChatPrompt/submit", body, {headers, responseType: 'text'});
+    return this.http.post<ChatQueryResponseModel>(environment.baseUrl + "/api/ChatPrompt/submit", query, { headers });
   }
 
   getGraph(graphName : string): Observable<GraphData[]>{
