@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../enviroments/environment.js';
 import { ChatQueryModel } from '../models/chat-query.model';
 import { ChatQueryResponseModel } from '../models/chat-query-response.model';
+import { GraphData } from '../models/graph-data.model.js';
 
 @Injectable({
   providedIn: 'root'
@@ -20,5 +21,9 @@ export class ChatQueryService {
     });
 
     return this.http.post<ChatQueryResponseModel>(environment.baseUrl + "/api/ChatPrompt/submit", query, { headers });
+  }
+
+  getGraph(graphName : string): Observable<GraphData[]>{
+    return this.http.get<GraphData[]>(environment.baseUrl + "/api/Graph?Name=" + graphName);
   }
 }

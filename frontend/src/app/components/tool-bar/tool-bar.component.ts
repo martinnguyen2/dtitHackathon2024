@@ -30,9 +30,10 @@ export class ToolBarComponent implements OnInit {
     this.selectedDataset = dataset;
   }
 
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    if (!file)
+  onFileSelected(event : any){
+
+    const file : File = event.target.files[0];
+    if(!file)
       return;
 
     const dataToSend = new FormData()
@@ -40,7 +41,8 @@ export class ToolBarComponent implements OnInit {
     dataToSend.append("file", file)
 
     this.datasetsService.postDataset(dataToSend).subscribe(
-      next => console.log(next)
+      response => console.log(response),
+      error =>  console.log(error.error.message)
     );
   }
 }
