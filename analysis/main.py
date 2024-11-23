@@ -59,44 +59,57 @@ def main():
             print(f"Error reading the CSV file: {e}")
             return None
     elif args.action == 'visualize':
+        if not args.prompt:
+            return json.dumps({"error": "Prompt is required for visualization action"})
+
         try:
             df = pd.read_csv(args.dataset_path, encoding='latin1')
             df_head = df.head(6)
             column_types = df.dtypes.to_dict()
-            context = f"These are the first 6 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line, Scatter, Bubble, Pie, Doughnut, PolarArea, Radar. The name of the dataset is {args.dataset_path}"
-            user_input = f"{args.prompt}\nWhat are the all columns (max 3) I can make a graph with and what type of graph should I use? May be more. Please respond in the format 'column_name:chart_type'."
+            context = f"These are the first 6 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line, Scatter, Pie. The name of the dataset is {args.dataset_path}"
+            user_input = f"The user query is: {args.prompt}\n Based on user query, what columns should I get from the dataset, which should be in x column, which should be in y column, which should be grouped? What graph he wants? If not specified, you decide which graph. You can use only the columns I provided, nothing else and those are case sensitive - so choose only from provided columns in context! Make it in format 'column_name_x:column_name_y:group_by:group_value:chart_type:action'. Action f.e. count if needed"
             
             response = raw_chat_with_gpt_without_cache(context, user_input)
-            # Parse the response to get column names and chart types
-            columns_and_charts = response.split(',')
-            columns = []
-            chart_types = {}
-            for col in columns_and_charts:
-                if ':' in col:
-                    column_name, chart_type = col.split(':')
-                    column_name = column_name.strip().strip("'")  # Clean up the column name
-                    columns.append(column_name)
-                    chart_types[column_name] = chart_type.strip()
 
-            # Preprocess the data
-            preprocessed_data = {}
-            for column in columns:
-                col_data = df[[column]].dropna()  # Remove rows with missing values
-                col_data = col_data.drop_duplicates()  # Remove duplicate rows
-                col_data = col_data.convert_dtypes()  # Ensure consistent data types
-                preprocessed_data[column] = col_data[column].tolist()
+            print(response)
 
-            # Prepare the JSON response
-            json_response = {
-                "visualization": {
-                    "columns": columns,
-                    "chart_types": chart_types,
-                    "data": preprocessed_data,
-                },
-                "cacheId": None
+            columns_and_charts = response.split(':')
+            if len(columns_and_charts) != 6:
+                return json.dumps({"error": "Invalid response format from GPT"})
+            
+            column_name_x, column_name_y, group_by, group_value, chart_type, action = columns_and_charts
+            column_name_x = column_name_x.strip()
+            column_name_y = column_name_y.strip()
+            group_by = group_by.strip()
+            group_value = group_value.strip()
+            chart_type = chart_type.strip()
+            action = action.strip()
+
+            # Filter and preprocess the data
+            if group_by and group_value and group_by in df.columns:
+                filtered_df = df[df[group_by] == group_value]
+            else:
+                filtered_df = df
+
+            if action == 'count':
+                grouped_df = filtered_df.groupby(column_name_x).size().reset_index(name=column_name_y)
+            else:
+                grouped_df = filtered_df.groupby(column_name_x)[column_name_y].sum().reset_index()
+
+            # Generate the graph data
+            graph_data = {
+                "type": chart_type,
+                "data": {
+                    "labels": grouped_df[column_name_x].tolist(),
+                    "datasets": [{
+                        "label": column_name_y,
+                        "data": grouped_df[column_name_y].tolist()
+                    }]
+                }
             }
 
-            return json.dumps(json_response)
+            return json.dumps(graph_data)
+
         except UnicodeDecodeError as e:
             print(f"Error reading the CSV file: {e}")
 
