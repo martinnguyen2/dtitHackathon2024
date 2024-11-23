@@ -11,6 +11,6 @@ export class ChatQueryService {
   constructor(private http: HttpClient) { }
 
   public postQuery(input : string) : Observable<string>{
-    return this.http.post<string>(environment.baseUrl + "/api/ChatPrompt/submit",input);
+    return this.http.post<string>(environment.baseUrl + "/api/ChatPrompt/submit",{"prompt" : input});
   }
 }
