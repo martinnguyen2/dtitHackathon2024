@@ -22,12 +22,12 @@
 
         input {
             background-color: red;
-            
+
             &:checked {
                 color: $primary-color-dark;
                 border: #c2c2c2;
             }
-        }       
+        }
     }
 
     textarea{
@@ -64,4 +64,8 @@
   cursor: not-allowed;
   background-color: #c2c2c2!important;
   color: white!important;
+}
+
+input[type=checkbox]{
+  accent-color: $primary-color-dark
 }
