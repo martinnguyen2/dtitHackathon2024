@@ -4,5 +4,5 @@ namespace Backend.API.Services.Contracts;
 
 public interface IChatPromptService
 {
-    string Submit(PromptDto promptDto);
+    Task<string> Submit(PromptDto promptDto);
 }
