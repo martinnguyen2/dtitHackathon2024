@@ -7,7 +7,7 @@ namespace Backend.API.Services
     {
         private string myScriptsFolder = Path.Combine(AppContext.BaseDirectory, "analysis");
 
-        public string Execute(string script="main.py", string arguments="")
+        public async Task<string> Execute(string script="main.py", string arguments="")
         {
             string executablePath = OperatingSystem.IsWindows() ? "python.exe" : "python3";
             string path = Path.Combine(myScriptsFolder, script);
@@ -29,7 +29,7 @@ namespace Backend.API.Services
             process.Start();
 
             string output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
+            await process.WaitForExitAsync();
 
             return output;
         }

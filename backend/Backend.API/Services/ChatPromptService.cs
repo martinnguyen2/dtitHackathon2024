@@ -23,8 +23,7 @@ public class ChatPromptService : IChatPromptService
         switch (action)
         {
             case ActionEnum.EXPLAIN:
-                return await _explainService.Explain(promptDto.Prompt);
-                break;
+                return await _explainService.Explain(promptDto);
             case ActionEnum.VISUALIZE:
                 // TODO
                 break;
