@@ -21,7 +21,14 @@
         <li><a class="dropdown-item">Baba a dzedo</a></li>
       </ul>
     </div>
-    <button class="btn btn-pink">Upload dataset</button>
+    <input 
+      #uploadFileSet
+      type="file" 
+      class="d-none"
+      accept=".csv"
+      (change)="onFileSelected($event)"
+    />
+    <button inputmode="file" class="btn btn-pink" (click)="uploadFileSet.click()">Upload dataset</button>
   </div>
 </div>
 
