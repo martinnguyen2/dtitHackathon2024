@@ -1,7 +1,8 @@
-<div class="input-wrapper d-flex justify-content-center w-75 align-items-center mx-auto my-3 px-3">
+<div class="input-wrapper d-flex justify-content-center w-75 align-items-center mx-auto my-3 px-3 py-3">
   <textarea [(ngModel)]="textAreaInput" #query aria-setsize="auto" class="w-100 border-0 bg-transparent"
-            placeholder="Write your query here"></textarea>
-  <button type="button" class="rounded-3 border-0 my-3 p-2" (click)="sendQuery()">
+            placeholder="Write your query here" [disabled]="!isDatasetSelected" [ngClass]="isDatasetSelected ? '' : 'disabled-input'"></textarea>
+  <button type="button" class="rounded-3 border-0 d-flex justify-content-center align-items-center px-2 py-1"
+          (click)="sendQuery()" [disabled]="!isDatasetSelected" [ngClass]="isDatasetSelected ? '' : 'disabled-button'">
     <mat-icon>keyboard_arrow_right</mat-icon>
   </button>
 </div>
