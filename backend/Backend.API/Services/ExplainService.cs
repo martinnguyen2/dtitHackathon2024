@@ -43,13 +43,27 @@ public class ExplainService : IExplainService
                 $"--prompt \"{promptDto.Prompt}\"";
         }
 
-        ExplainScriptResponseDto? dto = JsonSerializer.Deserialize<ExplainScriptResponseDto>(await myPythonExecuteService.Execute("main.py", arguments));
+        ExplainScriptResponseDto? dto;
+
+        try
+        {
+            dto = JsonSerializer.Deserialize<ExplainScriptResponseDto>(await myPythonExecuteService.Execute("main.py", arguments));
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine($"An error occured! {exception.Message}");
+            return new ExplainServiceResponse()
+            {
+                TextOutput = "There was an issue while getting the response from OpenAI.",
+                CacheId = "-1"
+            };
+        }
 
         if (dto == null)
         {
             return new ExplainServiceResponse()
             {
-                TextOutput = "There was an issue getting the response from OpenAI.",
+                TextOutput = "There was an issue while getting the response from OpenAI.",
                 CacheId = "-1"
             };
         }
