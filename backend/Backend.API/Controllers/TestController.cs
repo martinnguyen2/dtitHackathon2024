@@ -1,4 +1,4 @@
-using Backend.API.Models;
+using Backend.Common.Models;
 using Backend.API.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
