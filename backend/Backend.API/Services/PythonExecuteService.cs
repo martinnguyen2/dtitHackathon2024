@@ -19,6 +19,7 @@ namespace Backend.API.Services
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
+            process.StartInfo.EnvironmentVariables["OPENAI_API_KEY"] = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
 
             if (arguments != string.Empty)
             {
