@@ -19,7 +19,11 @@
     <Content Include="..\..\data\*\*.csv">
       <Link>Data\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>  
+    </Content>
+    <Content Include="..\..\analysis\**">
+      <Link>analysis\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
