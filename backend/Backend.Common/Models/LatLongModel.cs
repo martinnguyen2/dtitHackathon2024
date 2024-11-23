@@ -1,4 +1,4 @@
-namespace Backend.API.Models
+namespace Backend.Common.Models
 {
     public class LatLongModel
     {

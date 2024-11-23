@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Backend.API.DTOs;
-using Backend.API.Models;
+using Backend.Common.Models;
 using Backend.API.Services.Contracts;
 
 namespace Backend.API.Services

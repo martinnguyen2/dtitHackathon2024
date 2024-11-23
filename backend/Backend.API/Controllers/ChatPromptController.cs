@@ -26,6 +26,11 @@ namespace Backend.API.Controllers
             {
                 return BadRequest();
             }
+
+            if (promptDto.CacheId == string.Empty || promptDto.CacheId == "-1")
+            {
+                promptDto.CacheId = null;
+            }
             
             var action = await ResolveActionFromPrompt(promptDto.Prompt);
             
