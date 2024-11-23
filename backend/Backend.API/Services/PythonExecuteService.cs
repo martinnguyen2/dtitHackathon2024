@@ -13,7 +13,7 @@ namespace Backend.API.Services
             string path = Path.Combine(myScriptsFolder, script);
 
             Process process = new Process();
-            process.StartInfo = new ProcessStartInfo(executablePath, path)
+            process.StartInfo = new ProcessStartInfo(executablePath)
             {
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
@@ -21,9 +21,13 @@ namespace Backend.API.Services
             };
             process.StartInfo.EnvironmentVariables["OPENAI_API_KEY"] = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
 
-            if (arguments != string.Empty)
+            if (arguments == string.Empty)
             {
-                process.StartInfo.Arguments = arguments;
+                process.StartInfo.Arguments = path;
+            }
+            else
+            {
+                process.StartInfo.Arguments = path + " " + arguments;
             }
 
             process.Start();

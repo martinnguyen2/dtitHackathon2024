@@ -6,9 +6,9 @@ namespace Backend.Common.Utils
     {
         public static Dataset? Find(ResponseDataset dataset)
         {
-            string path = Path.Combine(AppContext.BaseDirectory, "Data", dataset.Name, ".csv");
+            string path = Path.Combine(AppContext.BaseDirectory, "Data", dataset.Name + ".csv");
 
-            if (!Directory.Exists(path))
+            if (!File.Exists(path))
             {
                 return null;
             }
