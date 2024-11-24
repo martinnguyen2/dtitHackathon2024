@@ -3,12 +3,15 @@
   border-radius: 18px;
   padding: 20px;
   height: 500px;
+}
 
-  .chart {
-    flex: 3;
-  }
+.content {
+  background-color: white;
+  border-radius: 18px;
+  padding: 20px 40px;
 
-  .text-output {
-    flex: 2;
+  .title {
+    font-weight: 700;
+    color: $primary-color-dark;
   }
 }

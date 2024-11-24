@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
 import {ChartData, ChartOptions} from 'chart.js';
 import {ChartjsComponent, ChartjsModule} from '@ctrl/ngx-chartjs';
-import { DatasetsService } from '../../../services/datasets.service.js';
-import { ChatQueryService } from '../../../services/chat-query.service.js';
+import { ChatQueryResponseModel } from '../../../models/chat-query-response.model';
 import { GraphData } from '../../../models/graph-data.model';
 import { SpinnerComponent } from "../../spinner/spinner.component";
+
 
 
 @Component({
@@ -14,15 +14,21 @@ import { SpinnerComponent } from "../../spinner/spinner.component";
   styleUrl: './visualized-data.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VisualizedDataComponent implements OnInit{
+export class VisualizedDataComponent {
   @ViewChild('graphId', { static: true }) graphElement!: ChartjsComponent;
-  @Input() set graphData(data: GraphData[]){
-    this.values = data.map(item => +item.value);
-    this.labels = data.map(item => item.label);
+  @Input() set graphData(data: ChatQueryResponseModel | undefined){
+    this.values = data?.graphData?.map(item => +item.value);
+    this.labels = data?.graphData?.map(item => item.label);
+    this.chartType = data?.chartType;
+    this.xLabel = data?.xLabel;
+    this.yLabel = data?.yLabel;
   };
 
-  labels: string[] = [];
-  values: number[] = [];
+  labels: string[] | undefined = [];
+  values: number[] | undefined = [];
+  chartType: string | undefined = '';
+  xLabel: string | undefined = '';
+  yLabel: string | undefined = '';
   private _data: GraphData[] = [];
 
   get graphData(): GraphData[]{
@@ -42,21 +48,15 @@ export class VisualizedDataComponent implements OnInit{
     },
   };
 
-  constructor(private datasetService : DatasetsService, private chatQueryService: ChatQueryService){}
-
-  ngOnInit() {
-    this.datasetService.selectedDataset$.subscribe(item => this.chatQueryService.getGraph(item.name).subscribe(
-      res => console.log(res)
-   ))
-  }
+  constructor(){}
 
   get dataState(): ChartData{
     return {
       labels: this.labels,
       datasets: [
         {
-          label: 'Dataset 1',
-          data: this.values,
+          label: this.xLabel,
+          data: this.values!,
           backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
         },
       ],
