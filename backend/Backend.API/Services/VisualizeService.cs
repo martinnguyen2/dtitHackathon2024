@@ -62,12 +62,13 @@ namespace Backend.API.Services
 
             VisualizeServiceResponse response = new VisualizeServiceResponse
             {
+                Type = "visualize",
                 CacheId = "",
+                GraphTitle = dto.graphTitle,
                 ChartType = dto.type,
                 GraphData = graphDatas,
                 XLabel = dto.data.xLabel,
-                YLabel = dto.data.yLabel,
-                Type = "visualize"
+                YLabel = dto.data.yLabel
             };
 
             return response;
