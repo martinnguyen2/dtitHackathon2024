@@ -26,7 +26,8 @@ namespace Backend.API.Services
 
             string arguments = $"--action visualize " +
                 $"--dataset_path \"{dataset.Path}\" " +
-                $"--prompt \"{promptDto.Prompt}\"";
+                $"--prompt \"{promptDto.Prompt}\"" +
+                (promptDto.PredictorModel == 1 ? " --predictorModel svm" : "");
 
             VisualizeScriptResponseDto? dto;
 
