@@ -4,5 +4,6 @@ export interface ChatQueryModel {
   prompt: string;
   dataset: DatasetModel;
   cacheId?: string;
+  predictorModel: number;
   isExpert: boolean;
 }
