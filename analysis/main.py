@@ -83,43 +83,59 @@ def main():
         if not args.prompt:
             return json.dumps({"error": "Prompt is required for visualization action"})
 
-        try:
-            df = pd.read_csv(args.dataset_path, encoding='latin1')
-            df.columns = df.columns.str.lower()  # Convert column names to lowercase
-            df_head = df.head(6)
-            column_types = df.dtypes.to_dict()
-            context = f"These are the first 6 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {args.dataset_path}"
-            user_input = f"The user query is: {args.prompt}\n Based on user query, what columns should I get from the dataset, which should be in x column, which should be in y column, which should be grouped? What graph he wants? If not specified, you decide which graph. You can use only the columns I provided, nothing else and those are case sensitive - so choose only from provided columns in context! Make it in format 'column_name_x:column_name_y:group_by:group_value:chart_type:action'. Action f.e. count if needed"
-            
-            response = raw_chat_with_gpt_without_cache(context, user_input)
+        make_plot = False
 
-            print(response)
+        if make_plot:
+            try:
+                df = pd.read_csv(args.dataset_path, encoding='latin1', lineterminator='\n')
+                df.columns = df.columns.str.lower()  # Convert column names to lowercase
+                df_head = df.head(20)
+                column_types = df.dtypes.to_dict()
+                context = f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {args.dataset_path}"
 
-            columns_and_charts = response.split(':')
-            if len(columns_and_charts) != 6:
-                return json.dumps({"error": "Invalid response format from GPT"})
+                user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script using matplotlib to create the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the plot as 'output_plot.png'. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Only code, nothing else! No ```python"       
+                response = raw_chat_with_gpt_without_cache(context, user_input)
 
-            column_name_x, column_name_y, group_by, group_value, chart_type, action = map(str.strip, columns_and_charts)
 
-            column_name_x = column_name_x.lower()
-            column_name_y = column_name_y.lower()
-            group_by = group_by.lower()
-            group_value = group_value.lower()
-            chart_type = chart_type.lower()
-            action = action.lower()
+                # write response into fileOutput.py
+                with open('fileOutput.py', 'w') as f:
+                    f.write(response)
+                
+                # execute python fileOutput.py
+                import subprocess
+                import sys
+                subprocess.run([sys.executable, "fileOutput.py"])
 
-            # Handle different chart types with a switch-case equivalent 
-            if chart_type.lower() == "bar":
-                graph_data = bar_line_chart(df, column_name_x, column_name_y, group_by, group_value, action, chart_type.lower())
-            elif chart_type.lower() == "line":
-                graph_data = bar_line_chart(df, column_name_x, column_name_y, group_by, group_value, action, chart_type.lower())
-            else:
-                return json.dumps({"error": f"{chart_type} charts are not supported"})
+            except UnicodeDecodeError as e:
+                print(f"Error reading the CSV file: {e}")
+        else:
+            try:
+                df = pd.read_csv(args.dataset_path, encoding='latin1', lineterminator='\n')
+                df.columns = df.columns.str.lower()  # Convert column names to lowercase
+                df_head = df.head(20)
+                column_types = df.dtypes.to_dict()
+                context = f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {args.dataset_path}"
 
-            return json.dumps(graph_data)
+                desired_json_format = "{\"type\": type, \"data\": {\"labels\": [], \"values\": [], \"yLabel\": \"...\", \"xLabel\": \"...\"}}"
 
-        except UnicodeDecodeError as e:
-            print(f"Error reading the CSV file: {e}")
+                user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script to get data possible to plot the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the json file in 'output_json.json'. The desired format is {desired_json_format}. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Only code, nothing else! No ```python"       
+                response = raw_chat_with_gpt_without_cache(context, user_input)
+
+                # write response into fileOutput.py
+                with open('fileOutput.py', 'w') as f:
+                    f.write(response)
+                
+                # execute python fileOutput.py
+                import subprocess
+                import sys
+                subprocess.run([sys.executable, "fileOutput.py"])
+
+                # I want return content of output_json.json
+                with open('output_json.json', 'r') as f:
+                    return f.read()
+
+            except UnicodeDecodeError as e:
+                print(f"Error reading the CSV file: {e}")
 
 if __name__ == "__main__":
     response = main()
