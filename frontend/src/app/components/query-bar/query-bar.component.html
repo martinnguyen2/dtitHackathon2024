@@ -3,14 +3,13 @@
     <label class="d-flex align-items-center clickable user-select-none"><input type="checkbox" [(ngModel)]="isSimplifiedAnswer"><span class="mx-1">Simplify answer</span></label>
   </div>
   <textarea [(ngModel)]="textAreaInput" #query aria-setsize="auto" class="w-100 border-0 bg-transparent"
-            placeholder="Write your query here" [disabled]="!isDatasetSelected"
-            [ngClass]="isDatasetSelected ? '' : 'disabled-input'"></textarea>
+            placeholder="Write your query here"></textarea>
   <button type="button" class="rounded-3 border-0 d-flex justify-content-center align-items-center px-2 py-1 mic-btn"
         (click)="toggleMic()" [disabled]="!isDatasetSelected" [ngClass]="isDatasetSelected ? '' : 'disabled-button'">
     <mat-icon>{{ micIcon }}</mat-icon>
   </button>
   <button type="button" class="rounded-3 border-0 d-flex justify-content-center align-items-center px-2 py-1"
-          (click)="sendQuery()" [disabled]="!isDatasetSelected" [ngClass]="isDatasetSelected ? '' : 'disabled-button'">
+          (click)="sendQuery()" >
     <mat-icon>keyboard_arrow_right</mat-icon>
   </button>
 </div>
