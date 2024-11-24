@@ -12,6 +12,10 @@ import { GraphData } from '../models/graph-data.model.js';
 export class ChatQueryService {
   private promptData = new ReplaySubject<ChatQueryResponseModel>(1)
   promptData$ = this.promptData.asObservable();
+
+  private isLoading = new ReplaySubject<boolean>(1);
+  isLoading$ = this.isLoading.asObservable();
+  prompt = '';
   constructor(private http: HttpClient) {
   }
 
@@ -30,5 +34,9 @@ export class ChatQueryService {
 
   setPromptData(promptData: ChatQueryResponseModel) {
     this.promptData.next(promptData);
+  }
+
+  setIsLoading(isLoading: boolean) {
+    this.isLoading.next(isLoading);
   }
 }
