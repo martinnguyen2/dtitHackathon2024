@@ -16,7 +16,7 @@
         <app-visualized-data [graphData]="promptData" [class.flex-3]="isBothSelected()" class="chart  w-100 h-100"></app-visualized-data>
       }
       @if (selectedTypes.includes('analyze')) {
-        <app-visualized-data [graphData]="promptData" [class.flex-4]="isBothSelected()" class="chart  w-100 h-100"></app-visualized-data>
+        <app-text-output [data]="promptData" [class.flex-2]="isBothSelected()" class="text-output w-100 h-100"></app-text-output>
       }
     }
 
