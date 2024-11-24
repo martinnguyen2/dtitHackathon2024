@@ -6,6 +6,7 @@ import { DatasetsService } from '../../services/datasets.service';
 import { NgClass } from '@angular/common';
 import { DatasetModel } from '../../models/dataset.model';
 import { ChatQueryModel } from '../../models/chat-query.model';
+import { ChatQueryResponseModel } from '../../models/chat-query-response.model';
 
 @Component({
   selector: 'app-query-bar',
@@ -27,6 +28,8 @@ export class QueryBarComponent implements OnInit {
   isDatasetSelected = false;
   cacheId = '';
   isSimplifiedAnswer = false;
+
+  promptData: ChatQueryResponseModel | undefined;
 
   constructor(private chatQuery: ChatQueryService, private datasetsService: DatasetsService) {
   }
@@ -52,6 +55,8 @@ export class QueryBarComponent implements OnInit {
     }
     this.chatQuery.postQuery(chatQuery).subscribe((response) => {
         this.cacheId = response.cacheId;
+        this.promptData = response;
+        this.chatQuery.setPromptData(response);
     });
   }
 }

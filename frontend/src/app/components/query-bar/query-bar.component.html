@@ -1,12 +1,12 @@
 <div class="input-wrapper d-flex justify-content-center w-75 align-items-center mx-auto my-3 px-3 py-3">
-    <div class="checkbox-wrapper px-3 d-flex">
-        <input type="checkbox" [(ngModel)]="isSimplifiedAnswer">
-        <label>Simplify answer</label>
-    </div>
-    <textarea [(ngModel)]="textAreaInput" #query aria-setsize="auto" class="w-100 border-0 bg-transparent"
-            placeholder="Write your query here" [disabled]="!isDatasetSelected" [ngClass]="isDatasetSelected ? '' : 'disabled-input'"></textarea>
-    <button type="button" class="rounded-3 border-0 d-flex justify-content-center align-items-center px-2 py-1"
+  <div class="checkbox-wrapper px-3">
+    <label class="d-flex align-items-center clickable user-select-none"><input type="checkbox" [(ngModel)]="isSimplifiedAnswer"><span class="mx-1">Simplify answer</span></label>
+  </div>
+  <textarea [(ngModel)]="textAreaInput" #query aria-setsize="auto" class="w-100 border-0 bg-transparent"
+            placeholder="Write your query here" [disabled]="!isDatasetSelected"
+            [ngClass]="isDatasetSelected ? '' : 'disabled-input'"></textarea>
+  <button type="button" class="rounded-3 border-0 d-flex justify-content-center align-items-center px-2 py-1"
           (click)="sendQuery()" [disabled]="!isDatasetSelected" [ngClass]="isDatasetSelected ? '' : 'disabled-button'">
-        <mat-icon>keyboard_arrow_right</mat-icon>
-    </button>
+    <mat-icon>keyboard_arrow_right</mat-icon>
+  </button>
 </div>

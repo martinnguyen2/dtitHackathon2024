@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { VisualizedDataComponent } from "./visualized-data/visualized-data.component";
 import { TextOutputComponent } from "./text-output/text-output.component";
 import { DatasetModel } from "../../models/dataset.model";
-import { DatasetsService } from "../../services/datasets.service";
 import { ChatQueryService } from '../../services/chat-query.service';
-import { GraphData } from "../../models/graph-data.model";
-import { switchMap } from "rxjs";
+import { ChatQueryResponseModel } from "../../models/chat-query-response.model";
+import { ChartjsModule } from "@ctrl/ngx-chartjs";
+import { DatasetsService } from "../../services/datasets.service";
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
     selector: 'app-data-window',
@@ -18,21 +19,19 @@ import { switchMap } from "rxjs";
 })
 export class DataWindowComponent implements OnInit {
     dataset: DatasetModel | undefined;
-    graphData: GraphData[] = [];
+    promptData: ChatQueryResponseModel | undefined;
+    type = '';
 
-    constructor(private datasetsService: DatasetsService, private chatQueryService: ChatQueryService) {
+    constructor(private chatQueryService: ChatQueryService, private datasetsService: DatasetsService) {
     }
 
     ngOnInit() {
-        this.datasetsService.selectedDataset$
-            .pipe(
-                switchMap((dataset) => {
-                    this.dataset = dataset;
-                    return this.chatQueryService.getGraph(this.dataset.name);
-                })
-            )
-            .subscribe((graphData) => {
-                this.graphData = graphData;
-            });
+        this.datasetsService.selectedDataset$.subscribe((dataset) => {
+            this.dataset = dataset;
+        });
+        this.chatQueryService.promptData$.subscribe((promptData) => {
+            this.promptData = promptData;
+            this.type = promptData.type;
+        });
     }
 }
