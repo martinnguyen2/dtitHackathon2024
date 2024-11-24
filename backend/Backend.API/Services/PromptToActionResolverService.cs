@@ -22,7 +22,7 @@ public class PromptToActionResolverService : IPromptToActionResolverService
 
         // Use the prompt to analyze and deduce the action
         string masterPrompt = $"Determine which one of allowed actions specified in context will user prompt be requesting by its semantic. The returned value can be just enum name, nothing else.";
-        string context = $"Available enum values are: {actionEnumsString}";
+        string context = $"Available enum values are: {actionEnumsString}. The analyze is dealing with f.e. Enables users to locate specific data points or datasets quickly using keywords, tags, or natural language descriptions Or Users can type questions as they would ask a colleague, such as What were the sales trends last quarter? or Show me the customer demographics, expecting backend will return text string.";
         
         var aiResult = await AnalyzePrompt(masterPrompt, context, userPrompt);
         
@@ -41,8 +41,13 @@ public class PromptToActionResolverService : IPromptToActionResolverService
             else if (aiResult.ToLower().Contains("visualize"))
             {
                 resolvedAction = ActionEnum.VISUALIZE;
+            } else if (aiResult.ToLower().Contains("analyze"))
+            {
+                resolvedAction = ActionEnum.ANALYZE;
             }
         }
+        
+        Console.WriteLine(resolvedAction);
 
         return resolvedAction;
     }
