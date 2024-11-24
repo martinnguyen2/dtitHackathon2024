@@ -23,6 +23,27 @@ def process_response(response):
     else:
         return response
     
+def bar_line_chart(df, column_name_x, column_name_y, group_by, group_value, action, type):
+    if group_by and group_value and group_by in df.columns and group_value.lower() != 'none':
+        filtered_df = df[df[group_by].str.strip().str.lower() == group_value.strip().lower()]
+    else:
+        filtered_df = df
+
+    if action == 'count':
+        grouped_df = filtered_df.groupby(column_name_x).size().reset_index(name=f"{column_name_y}_count")
+    else:
+        grouped_df = filtered_df.groupby(column_name_x)[column_name_y].sum().reset_index(name=f"{column_name_y}_sum")
+
+    graph_data = {
+        "type": type,
+        "data": {
+            "labels": grouped_df[column_name_x].tolist(),
+            "values": grouped_df[f"{column_name_y}_count" if action == 'count' else f"{column_name_y}_sum"].tolist(),
+            "yLabel": column_name_y,
+            "xLabel": column_name_x
+        }
+    }
+    return graph_data
 
 def main():
     load_dotenv()
@@ -64,9 +85,10 @@ def main():
 
         try:
             df = pd.read_csv(args.dataset_path, encoding='latin1')
+            df.columns = df.columns.str.lower()  # Convert column names to lowercase
             df_head = df.head(6)
             column_types = df.dtypes.to_dict()
-            context = f"These are the first 6 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line, Scatter, Pie. The name of the dataset is {args.dataset_path}"
+            context = f"These are the first 6 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {args.dataset_path}"
             user_input = f"The user query is: {args.prompt}\n Based on user query, what columns should I get from the dataset, which should be in x column, which should be in y column, which should be grouped? What graph he wants? If not specified, you decide which graph. You can use only the columns I provided, nothing else and those are case sensitive - so choose only from provided columns in context! Make it in format 'column_name_x:column_name_y:group_by:group_value:chart_type:action'. Action f.e. count if needed"
             
             response = raw_chat_with_gpt_without_cache(context, user_input)
@@ -76,37 +98,23 @@ def main():
             columns_and_charts = response.split(':')
             if len(columns_and_charts) != 6:
                 return json.dumps({"error": "Invalid response format from GPT"})
-            
-            column_name_x, column_name_y, group_by, group_value, chart_type, action = columns_and_charts
-            column_name_x = column_name_x.strip()
-            column_name_y = column_name_y.strip()
-            group_by = group_by.strip()
-            group_value = group_value.strip()
-            chart_type = chart_type.strip()
-            action = action.strip()
 
-            # Filter and preprocess the data
-            if group_by and group_value and group_by in df.columns:
-                filtered_df = df[df[group_by] == group_value]
+            column_name_x, column_name_y, group_by, group_value, chart_type, action = map(str.strip, columns_and_charts)
+
+            column_name_x = column_name_x.lower()
+            column_name_y = column_name_y.lower()
+            group_by = group_by.lower()
+            group_value = group_value.lower()
+            chart_type = chart_type.lower()
+            action = action.lower()
+
+            # Handle different chart types with a switch-case equivalent 
+            if chart_type.lower() == "bar":
+                graph_data = bar_line_chart(df, column_name_x, column_name_y, group_by, group_value, action, chart_type.lower())
+            elif chart_type.lower() == "line":
+                graph_data = bar_line_chart(df, column_name_x, column_name_y, group_by, group_value, action, chart_type.lower())
             else:
-                filtered_df = df
-
-            if action == 'count':
-                grouped_df = filtered_df.groupby(column_name_x).size().reset_index(name=column_name_y)
-            else:
-                grouped_df = filtered_df.groupby(column_name_x)[column_name_y].sum().reset_index()
-
-            # Generate the graph data
-            graph_data = {
-                "type": chart_type,
-                "data": {
-                    "labels": grouped_df[column_name_x].tolist(),
-                    "datasets": [{
-                        "label": column_name_y,
-                        "data": grouped_df[column_name_y].tolist()
-                    }]
-                }
-            }
+                return json.dumps({"error": f"{chart_type} charts are not supported"})
 
             return json.dumps(graph_data)
 
