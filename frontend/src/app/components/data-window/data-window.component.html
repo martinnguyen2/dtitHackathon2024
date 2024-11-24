@@ -2,7 +2,7 @@
   <div class="window d-flex bg-primary-dark">
     @if (type === 'explain') {
       <app-text-output [data]="promptData" class="text-output w-100 h-100"></app-text-output>
-    } @else if (type === '') {
+    } @else if (type === 'visualize') {
       <app-visualized-data [graphData]="promptData" class="chart w-100 h-100"></app-visualized-data>
     } @else {
       <div class="content h-100 w-100 d-flex justify-content-center align-items-center flex-column">

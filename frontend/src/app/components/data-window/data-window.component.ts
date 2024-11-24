@@ -5,6 +5,7 @@ import { DatasetModel } from "../../models/dataset.model";
 import { ChatQueryService } from '../../services/chat-query.service';
 import { ChatQueryResponseModel } from "../../models/chat-query-response.model";
 import { ChartjsModule } from "@ctrl/ngx-chartjs";
+import { DatasetsService } from "../../services/datasets.service";
 
 @Component({
     selector: 'app-data-window',
@@ -21,10 +22,13 @@ export class DataWindowComponent implements OnInit {
     promptData: ChatQueryResponseModel | undefined;
     type = '';
 
-    constructor(private chatQueryService: ChatQueryService) {
+    constructor(private chatQueryService: ChatQueryService, private datasetsService: DatasetsService) {
     }
 
     ngOnInit() {
+        this.datasetsService.selectedDataset$.subscribe((dataset) => {
+            this.dataset = dataset;
+        });
         this.chatQueryService.promptData$.subscribe((promptData) => {
             this.promptData = promptData;
             this.type = promptData.type;
