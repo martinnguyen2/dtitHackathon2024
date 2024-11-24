@@ -44,7 +44,7 @@ public class ChatPromptService : IChatPromptService
         return new ExplainServiceResponse()
         {
             Type = "explain",
-            TextOutput = "IDK what to do with this prompt",
+            TextOutput = "This type of prompt is not supported.",
             CacheId = "-1"
         };
     }
