@@ -6,5 +6,6 @@ namespace Backend.API.Services.Contracts
     public interface IExplainService
     {
         Task<ExplainServiceResponse> Explain(PromptDto promptDto);
+        Task<ExplainServiceResponse> Analyze(PromptDto promptDto);
     }
 }
