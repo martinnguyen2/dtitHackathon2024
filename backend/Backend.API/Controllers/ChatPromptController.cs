@@ -11,11 +11,13 @@ namespace Backend.API.Controllers
     public class ChatPromptController : ControllerBase
     {
         private readonly IChatPromptService _chatPromptService;
+        private readonly IDatasetResolverService _datasetResolverService;
         private readonly IPromptToActionResolverService _promptToActionResolverService;
 
-        public ChatPromptController(IChatPromptService chatPromptService, IPromptToActionResolverService promptToActionResolverService)
+        public ChatPromptController(IChatPromptService chatPromptService, IDatasetResolverService datasetResolverService, IPromptToActionResolverService promptToActionResolverService)
         {
             _chatPromptService = chatPromptService;
+            _datasetResolverService = datasetResolverService;
             _promptToActionResolverService = promptToActionResolverService;
         }
         
@@ -31,10 +33,17 @@ namespace Backend.API.Controllers
             {
                 promptDto.CacheId = null;
             }
+
+            if (promptDto.Dataset == null)
+            {
+                promptDto.Dataset = await _datasetResolverService.ResolveDataset(promptDto.Prompt);
+            }
             
             var action = await ResolveActionFromPrompt(promptDto.Prompt);
             
-            return await _chatPromptService.Submit(promptDto, action);
+            var resultJson = await _chatPromptService.Submit(promptDto, action);
+            // TODO: Tu potrebujeme pridat datasetname aby frontend vedel namapovat dataset v liste
+            return resultJson;
         }
         
         private async Task<ActionEnum> ResolveActionFromPrompt(string userPrompt)

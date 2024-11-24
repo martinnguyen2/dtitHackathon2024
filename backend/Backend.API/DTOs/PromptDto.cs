@@ -8,6 +8,6 @@ namespace Backend.API.DTOs
         public string? CacheId { get; set; }
         required public bool IsExpert { get; set; }
         public int PredictorModel { get; set; }
-        required public ResponseDataset Dataset { get; set; }
+        public ResponseDataset? Dataset { get; set; }
     }
 }

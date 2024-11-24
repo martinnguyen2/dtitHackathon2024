@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IExplainService, ExplainService>();
         services.AddScoped<IVisualizeService, VisualizeService>();
         services.AddScoped<IGeoCodeResolverService, GeoCodeResolverService>();
+        services.AddScoped<IDatasetResolverService, DatasetResolverService>();
 
         return services;
     }
