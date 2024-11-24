@@ -3,12 +3,13 @@ import {ChartData, ChartOptions} from 'chart.js';
 import {ChartjsComponent, ChartjsModule} from '@ctrl/ngx-chartjs';
 import { ChatQueryResponseModel } from '../../../models/chat-query-response.model';
 import { GraphData } from '../../../models/graph-data.model';
+import { SpinnerComponent } from "../../spinner/spinner.component";
 
 
 
 @Component({
   selector: 'app-visualized-data',
-  imports: [ChartjsModule, ChartjsModule],
+  imports: [ChartjsModule, ChartjsModule, SpinnerComponent],
   templateUrl: './visualized-data.component.html',
   styleUrl: './visualized-data.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
