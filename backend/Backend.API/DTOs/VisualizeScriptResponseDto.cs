@@ -3,6 +3,7 @@ namespace Backend.API.DTOs
     public class VisualizeScriptResponseDto
     {
         public required string type { get; set; }
+        public required string graphTitle { get; set; }
         public required VisualizeScriptResponseDtoData data { get; set; }
     }
 

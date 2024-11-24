@@ -1,4 +1,10 @@
 <div class="content h-100 w-100 overflow-y-scroll">
   <h5 class="title">Text output</h5>
-  <div class="text">{{ text }}</div>
+
+  <div class="wrapper">
+    @for (text of textArray; track $index) {
+      <div class="text py-2">{{ text }}</div>
+    }
+  </div>
+
 </div>

@@ -24,9 +24,8 @@ def raw_chat_with_gpt_without_cache(context, user_input):
         messages.append({"role": "assistant", "content": qa_res})
 
         return qa_res
-
-    except openai.error.OpenAIError as e:
-        print(f"Error in generating response: {e}")
+    except Exception as e:
+        return json.dumps({"error": str(e)})
 
 def chat_with_gpt(context, user_input, cacheId=None):
     api_key = os.getenv("OPENAI_API_KEY")
@@ -81,7 +80,11 @@ def chat_with_gpt(context, user_input, cacheId=None):
         with open(cache_file_path, "w") as cache_file:
             json.dump(cache, cache_file)
 
+        
+        if qa_res.lower().startswith("error"):
+            return json.dumps({"error": response.text_output})
+
         return json.dumps({"text_output": qa_res, "cacheId": cacheId})
 
-    except openai.error.OpenAIError as e:
-        print(f"Error in generating response: {e}")
+    except Exception as e:
+        return json.dumps({"error": str(e)})
