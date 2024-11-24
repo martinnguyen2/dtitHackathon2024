@@ -37,6 +37,8 @@ public class ChatPromptService : IChatPromptService
                 }
 
                 return response;
+            case ActionEnum.ANALYZE:
+                return await _explainService.Analyze(promptDto);
             default:
                 break;
         }

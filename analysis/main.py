@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import json
 from dotenv import load_dotenv
-from chatbot.OpenAiChat import chat_with_gpt, raw_chat_with_gpt_without_cache
+from chatbot.OpenAiChat import chat_with_gpt, raw_chat_with_gpt_without_cache, raw_chat_with_previous_cache
 
 def process_response(response):
     response_data = json.loads(response)
@@ -79,7 +79,7 @@ def make_image_plot(dataset_path, prompt):
 def main():
     load_dotenv()
     parser = argparse.ArgumentParser(description="Process some parameters.")
-    parser.add_argument('--action', type=str, choices=['explain', 'visualize'], help='Action to perform')
+    parser.add_argument('--action', type=str, choices=['explain', 'visualize', 'analyze'], help='Action to perform')
     parser.add_argument('--dataset_path', type=str, help='Path to the dataset')
     parser.add_argument('--prompt', type=str, help='Prompt for the discussion')
     parser.add_argument('--cacheId', type=str, help='Cache ID for message history', default=None)
@@ -88,7 +88,7 @@ def main():
     
     args = parser.parse_args()
     
-    if args.cacheId and args.action != 'visualize':
+    if args.cacheId and args.action != 'visualize' and args.action != 'analyze':
         # Continue the conversation using the provided cacheId
         context = ""
         user_input = args.prompt
@@ -110,6 +110,81 @@ def main():
             response = chat_with_gpt(context, user_input)
 
             return response
+        except UnicodeDecodeError as e:
+            print(f"Error reading the CSV file: {e}")
+            return None
+    elif args.action == 'analyze':
+        if not args.prompt:
+            return json.dumps({"error": "Prompt is required for analyze action"})
+
+        try:
+            df = pd.read_csv(args.dataset_path, encoding='latin1', lineterminator='\n')
+            df.columns = df.columns.str.lower()  # Convert column names to lowercase
+            df_head = df.head(20)
+            column_types = df.dtypes.to_dict()
+
+            df = pd.read_csv(args.dataset_path, encoding='latin1')
+            if args.isExpert:
+                context = "The user that queries this is expert and understands data. "
+            else:
+                context = "The user that queries this is not an expert and does not actually understand data, so explain as for a non-expert. "
+            context += f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\n The name of the dataset is {args.dataset_path}"
+            context += "If the users prompt is not about the dataset, then return string \"Error\" + I cannot help with this query. "
+            user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script to analyze the dataset based on what he wants. The script should use only the columns provided in the context and should be case sensitive. The script should store the text describing the desired action and analysis result string into file \"analysisResult.txt\" as a one line, without new lines. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Important is to include error handling to manage missing columns or other potential issues. Ensure to rename columns appropriately after resetting the index. Perform data type checks and conversions where necessary to handle non-numeric data appropriately. Make sure all variables are defined. Don't repeat yourself, therefore preprocess the data. Return code only, not any initial text. Look for NaN values, if there are there, make them zero. Only safe code for analyzing, so prevent user to query dangerous code. nothing else! If it is garbage prompt, return string \"Error\" + reason. Return only and only the code! No text!"       
+
+            response = raw_chat_with_previous_cache(context, user_input, args.cacheId)
+
+            # check if response starts with error, then terminate, not continue, case insensitive            
+            if response['result'].lower().startswith("error"):
+                return json.dumps({"error": response.result})
+
+            cacheId = response['cacheId']
+
+            response = response['result'].strip()
+            if response.startswith("```python"):
+                response = response[len("```python"):].strip()
+            # drop everything that is after the ``` in the response
+            response = response.split("```")[0]
+
+            # write response into fileOutput.py
+            with open('fileOutput.py', 'w') as f:
+                f.write(response)
+
+            try:
+                import subprocess
+                import sys
+                subprocess.run([sys.executable, "fileOutput.py"])
+            except Exception as e:
+                return json.dumps({"error": "Error in generating json"})
+
+            with open('analysisResult.txt', 'r') as f:
+                analysisResult = f.read()
+
+                if cacheId:
+                    cache_file_path = "chat_cache.json"
+                    if os.path.exists(cache_file_path):
+                        with open(cache_file_path, "r") as cache_file:
+                            cache = json.load(cache_file)
+                            messages = cache.get(cacheId, [])
+                    else:
+                        cache = {}
+
+                    messages.append({"role": "assistant", "content": analysisResult})
+
+                    if os.path.exists(cache_file_path):
+                        with open(cache_file_path, "r") as cache_file:
+                            cache = json.load(cache_file)
+                    else:
+                        cache = {}
+
+                    cache[cacheId] = messages
+
+                    with open(cache_file_path, "w") as cache_file:
+                        json.dump(cache, cache_file)
+                
+
+                return json.dumps({"text_output": analysisResult, "cacheId": cacheId})
+
         except UnicodeDecodeError as e:
             print(f"Error reading the CSV file: {e}")
             return None
@@ -196,6 +271,5 @@ if __name__ == "__main__":
         response = main()
         print(response)
     except Exception as e:
-        print("Retrying..")
         response = main()
         print(response)
