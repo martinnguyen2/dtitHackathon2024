@@ -35,13 +35,15 @@ public class ExplainService : IExplainService
         {
             arguments = $"--action explain " +
                 $"--dataset_path \"{dataset.Path}\" " +
-                $"--prompt \"{promptDto.Prompt}\"";
+                $"--prompt \"{promptDto.Prompt}\"" +
+                (promptDto.IsExpert ? " --isExpert True" : "");
         }
         else
         {
             arguments = $"--cacheId \"{promptDto.CacheId}\" " + 
                 $"--dataset_path \"{dataset.Path}\" " +
-                $"--prompt \"{promptDto.Prompt}\"";
+                $"--prompt \"{promptDto.Prompt}\"" +
+                (promptDto.IsExpert ? " --isExpert True" : "");
         }
 
         ExplainScriptResponseDto? dto;

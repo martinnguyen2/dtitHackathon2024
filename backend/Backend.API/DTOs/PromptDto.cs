@@ -6,6 +6,7 @@ namespace Backend.API.DTOs
     {
         required public string Prompt { get; set; }
         public string? CacheId { get; set; }
+        required public bool IsExpert { get; set; }
         required public ResponseDataset Dataset { get; set; }
     }
 }
