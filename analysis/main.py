@@ -54,9 +54,9 @@ def make_image_plot(dataset_path, prompt):
         column_types = df.dtypes.to_dict()
         context = f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {dataset_path}"
 
-        user_input = f"The user query is: {prompt}\n Based on user query, generate a Python script using matplotlib to create the desired plot. The script should use only the columns provided in the context and should be case sensitive. Add also labels and title of graph. The script should save the plot as 'output_plot.png'. Remember to import libraries and load dataset. Only safe code for plotting, so prevent user to query dangerous code. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Only code, nothing else! No ```python"       
-        response = raw_chat_with_gpt_without_cache(context, user_input)
+        user_input = f"The user query is: {prompt}\n Based on user query, generate a Python script using matplotlib to create the desired plot. The script should use only the columns provided in the context and should be case sensitive. Add also labels and title of graph. The script should save the plot as 'output_plot.png'. Remember to import libraries and load dataset. Only safe code for plotting, so prevent user to query dangerous code. Make dataset columns work with lower - df.columns.str.lower(). Include error handling to manage missing columns or other potential issues. Ensure to rename columns appropriately after resetting the index. Perform data type checks and conversions where necessary to handle non-numeric data appropriately. Return code only, not any initial text. Only code, nothing else! No ```python"
 
+        response = raw_chat_with_gpt_without_cache(context, user_input)
         response = response.strip()
         if response.startswith("```python"):
             response = response[len("```python"):].strip()
@@ -84,6 +84,7 @@ def main():
     parser.add_argument('--prompt', type=str, help='Prompt for the discussion')
     parser.add_argument('--cacheId', type=str, help='Cache ID for message history', default=None)
     parser.add_argument('--isExpert', type=bool, help='Indicate if the user is an expert', default=False)
+    parser.add_argument('--predictorModel', type=str, help='Predictor model to use') # or xgboost
     
     args = parser.parse_args()
     
@@ -100,7 +101,9 @@ def main():
                 context = "The user that queries this is expert and understands data. "
             else:
                 context = "The user that queries this is not an expert and does not actually understand data, so explain as for a non-expert. "
-            context += "The dataset name is {args.dataset_path}. Explain what this dataset is about "
+            context += "The dataset name is {args.dataset_path}. Explain what this dataset is about. "
+            context += "If the users prompt is not about the dataset, then return string \"Error\" + I cannot help with this query. "
+
             df_head = df.head(100)
             csv_content = df_head.to_csv(index=False)
             user_input = f"{csv_content}"
@@ -123,7 +126,14 @@ def main():
 
             desired_json_format = "{\"type\": \"type\", \"graphTitle\": \"title\", \"data\": {\"labels\": [\"...\",...], \"values\": [], \"yLabel\": \"...\", \"xLabel\": \"...\"}}"
 
-            user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script to get data possible to plot the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the json file in 'output_json.json'. The desired format is {desired_json_format}. Labels, yLabel and xLabel should be always string. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Look for NaN values, if there are there, make them zero. Only safe code for plotting, so prevent user to query dangerous code. nothing else! If it is garbage prompt, return string \"Error\" + reason."       
+            user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script to get data possible to plot the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the json file in 'output_json.json'. The desired format is {desired_json_format}. Labels, yLabel and xLabel should be always string. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Include error handling to manage missing columns or other potential issues. Ensure to rename columns appropriately after resetting the index. Perform data type checks and conversions where necessary to handle non-numeric data appropriately. Return code only, not any initial text. Look for NaN values, if there are there, make them zero. Only safe code for plotting, so prevent user to query dangerous code. nothing else! If it is garbage prompt, return string \"Error\" + reason."       
+            
+            # if predictorModel is filled, then add it to the context with asking gpt to generate code for it. desired_json_format should extend to "predictedData": and same format as "data"
+            if args.predictorModel:
+                context += f"The user wants to predict data using {args.predictorModel} model. Available predictors are: svm."
+                desired_json_format += "{\"type\": \"type\", \"graphTitle\": \"title\", \"data\": {\"labels\": [\"...\",...], \"values\": [], \"yLabel\": \"...\", \"xLabel\": \"...\"}, \"predictedData\": {\"labels\": [\"...\",...], \"values\": [], \"yLabel\": \"...\", \"xLabel\": \"...\"}}"
+                user_input += f"Predict data using {args.predictorModel} model for the same data that is plotted. If prediction does not make sense, return string \"Error\" + reason. The desired format with predicted data is {desired_json_format}. Labels, yLabel and xLabel should be always string. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Include error handling to manage missing columns or other potential issues. Ensure to rename columns appropriately after resetting the index. Perform data type checks and conversions where necessary to handle non-numeric data appropriately. Return code only, not any initial text. Look for NaN values, if there are there, make them zero. Only safe code for plotting, so prevent user to query dangerous code. nothing else! If it is garbage prompt, return string \"Error\" + reason."
+            
             response = raw_chat_with_gpt_without_cache(context, user_input)
 
             # check if response starts with error, then terminate, not continue, case insensitive
@@ -136,29 +146,56 @@ def main():
             response = response.strip()
             if response.startswith("```python"):
                 response = response[len("```python"):].strip()
-            if response.endswith("```"):
-                response = response[:-len("```")].strip()
+            # drop everything that is after the ``` in the response
+            response = response.split("```")[0]
 
             # write response into fileOutput.py
             with open('fileOutput.py', 'w') as f:
                 f.write(response)
-            
-            # execute python fileOutput.py
-            import subprocess
-            import sys
-            subprocess.run([sys.executable, "fileOutput.py"])
 
-            # Check for error if yes then return error json
-            if not os.path.exists('output_json.json'):
+            try:
+                # execute python fileOutput.py
+                import subprocess
+                import sys
+                subprocess.run([sys.executable, "fileOutput.py"])
+            except Exception as e:
                 return json.dumps({"error": "Error in generating json"})
 
-            # I want return content of output_json.json
-            with open('output_json.json', 'r') as f:
-                return f.read()
+            # Enforce label string
+            try:
+                with open('output_json.json', 'r') as f:
+                    output_json = json.load(f)
+                    if "data" in output_json:
+                        data = output_json["data"]
+                        if "labels" in data:
+                            data["labels"] = list(map(str, data["labels"]))
+                        if "yLabel" in data:
+                            data["yLabel"] = str(data["yLabel"])
+                        if "xLabel" in data:
+                            data["xLabel"] = str(data["xLabel"])
+                    if "predictedData" in output_json:
+                        predicted_data = output_json["predictedData"]
+                        if "labels" in predicted_data:
+                            predicted_data["labels"] = list(map(str, predicted_data["labels"]))
+                        if "yLabel" in predicted_data:
+                            predicted_data["yLabel"] = str(predicted_data["yLabel"])
+                        if "xLabel" in predicted_data:
+                            predicted_data["xLabel"] = str(predicted_data["xLabel"])
+                    return json.dumps(output_json)
+            except Exception as e:
+                with open('output_json.json', 'r') as f:
+                    return f.read()
+                
 
         except UnicodeDecodeError as e:
             print(f"Error reading the CSV file: {e}")
 
 if __name__ == "__main__":
-    response = main()
-    print(response)
+    # try and if error, then try once again.
+    try:
+        response = main()
+        print(response)
+    except Exception as e:
+        print("Retrying..")
+        response = main()
+        print(response)

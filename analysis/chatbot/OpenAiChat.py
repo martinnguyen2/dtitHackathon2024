@@ -81,6 +81,10 @@ def chat_with_gpt(context, user_input, cacheId=None):
         with open(cache_file_path, "w") as cache_file:
             json.dump(cache, cache_file)
 
+        
+        if qa_res.lower().startswith("error"):
+            return json.dumps({"error": response.text_output})
+
         return json.dumps({"text_output": qa_res, "cacheId": cacheId})
 
     except openai.error.OpenAIError as e:
