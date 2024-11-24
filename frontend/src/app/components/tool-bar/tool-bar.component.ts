@@ -35,6 +35,9 @@ export class ToolBarComponent implements OnInit {
   setPredictiveSet(input: number){
     this.predictedModel = input;
     this.datasetsService.setPredictiveSet(input);
+
+    if(input === 1)
+      this.toastService.warning("SVM is experimental function","⚠⚠⚠⚠⚠",{positionClass: "toast-bottom-right"});
   }
 
   onFileSelected(event : any){
