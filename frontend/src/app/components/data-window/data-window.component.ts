@@ -22,6 +22,7 @@ export class DataWindowComponent implements OnInit {
     dataset: DatasetModel | undefined;
     promptData: ChatQueryResponseModel | undefined;
     type = '';
+    selectedTypes: string[] = [];
 
     constructor(private chatQueryService: ChatQueryService, private datasetsService: DatasetsService) {
     }
@@ -37,6 +38,11 @@ export class DataWindowComponent implements OnInit {
             this.isLoading = false;
             this.promptData = promptData;
             this.type = promptData.type;
+            this.selectedTypes.push(promptData.type);
         });
+    }
+
+    isBothSelected():boolean {
+        return this.selectedTypes.includes('explain') && this.selectedTypes.includes('visualize');
     }
 }

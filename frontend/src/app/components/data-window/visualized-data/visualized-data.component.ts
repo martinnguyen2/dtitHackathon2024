@@ -17,11 +17,13 @@ import { SpinnerComponent } from "../../spinner/spinner.component";
 export class VisualizedDataComponent {
   @ViewChild('graphId', { static: true }) graphElement!: ChartjsComponent;
   @Input() set graphData(data: ChatQueryResponseModel | undefined){
-    this.values = data?.graphData?.map(item => +item.value);
-    this.labels = data?.graphData?.map(item => item.label);
-    this.chartType = data?.chartType;
-    this.xLabel = data?.xLabel;
-    this.yLabel = data?.yLabel;
+    if (data?.type == 'visualize'){
+      this.values = data?.graphData?.map(item => +item.value);
+      this.labels = data?.graphData?.map(item => item.label);
+      this.chartType = data?.chartType;
+      this.xLabel = data?.xLabel;
+      this.yLabel = data?.yLabel;
+    }
   };
 
   labels: string[] | undefined = [];
