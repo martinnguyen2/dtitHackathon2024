@@ -24,7 +24,14 @@ export class DatasetsService {
 
   setDataset(dataset: DatasetModel | undefined) {
     this.selectedDataset.next(dataset);
-    // document.querySelector("#selected-dataset")!.innerHTML = `<strong>Selected dataset:</strong> ${dataset?.name}`;
+
+    if (dataset == undefined)
+    {
+      document.querySelector("#selected-dataset")!.innerHTML = "";
+      return;
+    }
+
+    document.querySelector("#selected-dataset")!.innerHTML = `<strong>Selected dataset:</strong> ${dataset?.name}`;
   }
 
   setPredictiveSet(input: number){

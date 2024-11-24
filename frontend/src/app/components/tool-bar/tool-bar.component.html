@@ -1,5 +1,7 @@
 <div class="toolbar py-2 px-3 my-3 d-flex justify-content-between media">
   <div class="d-flex align-content-center align-items-center">
+    <div class="px-2 d-flex align-items-center refresh" title="Reset" (click)="reset()"><mat-icon >refresh</mat-icon></div>
+    <div class="px-2 d-flex align-items-center refresh" title="Save" (click)="save()"><mat-icon>save</mat-icon></div>
     <div class="dropdown dataset">
       <button class="btn btn-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         Choose dataset

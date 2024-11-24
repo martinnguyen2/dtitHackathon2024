@@ -35,7 +35,6 @@ export class DataWindowComponent implements OnInit {
         });
         this.datasetsService.selectedDataset$.subscribe((dataset) => { 
             this.dataset = dataset;
-            document.querySelector("#selected-dataset")!.innerHTML = `<strong>Selected dataset:</strong> ${dataset?.name}`;
         });
         this.chatQueryService.promptData$.subscribe((promptData) => {
             this.isLoading = false;
