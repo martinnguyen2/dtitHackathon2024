@@ -3,7 +3,7 @@
     <label class="d-flex align-items-center clickable user-select-none"><input type="checkbox" [(ngModel)]="isSimplifiedAnswer"><span class="mx-1">Simplify answer</span></label>
   </div>
   <textarea [(ngModel)]="textAreaInput" #query aria-setsize="auto" class="w-100 border-0 bg-transparent"
-            placeholder="Write your query here"></textarea>
+            placeholder="Write your query here" (change)="isDatasetSelected = true"></textarea>
   <button type="button" class="rounded-3 border-0 d-flex justify-content-center align-items-center px-2 py-1 mic-btn"
         (click)="toggleMic()" [disabled]="!isDatasetSelected" [ngClass]="isDatasetSelected ? '' : 'disabled-button'">
     <mat-icon>{{ micIcon }}</mat-icon>

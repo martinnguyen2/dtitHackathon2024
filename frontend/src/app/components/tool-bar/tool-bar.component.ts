@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, input, OnInit } from '@angular/core';
 import { DatasetModel } from '../../models/dataset.model';
 import { DatasetsService } from '../../services/datasets.service';
 import { ToastrService } from 'ngx-toastr';
@@ -12,7 +12,7 @@ import html2canvas from 'html2canvas';
     MatIcon
   ],
   templateUrl: './tool-bar.component.html',
-  styleUrl: './tool-bar.component.scss'
+  styleUrl: './tool-bar.component.scss',
 })
 export class ToolBarComponent implements OnInit {
   datasets: DatasetModel[] = [];
