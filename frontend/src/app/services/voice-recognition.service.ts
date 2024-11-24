@@ -6,7 +6,7 @@ declare let webkitSpeechRecognition: any;
 })
 export class VoiceRecognitionService {
     @Output() textChanged: EventEmitter<string> = new EventEmitter<string>();
-    recognition = new webkitSpeechRecognition();
+    recognition = typeof webkitSpeechRecognition !== "undefined" ? new webkitSpeechRecognition() : undefined;
     isStoppedSpeechRecog = false;
     public text = '';
     tempWords: any;
