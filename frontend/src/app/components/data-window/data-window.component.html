@@ -22,6 +22,9 @@
 
   </div>
 } @else {
+  @if (isLoading) {
+      <app-spinner></app-spinner>
+  }
   <div class="window p d-flex justify-content-center align-items-center bg-secondary-light">
     <h3 class="text">For using prompt input, please select dataset</h3>
   </div>

@@ -12,5 +12,7 @@ namespace Backend.Common.Models
         public required string YLabel { get; set; }
 
         public List<GraphData>? PredictedGraphData { get; set; }
+
+        public string? Dataset { get; set; }
     }
 }

@@ -8,4 +8,5 @@ export interface ChatQueryResponseModel {
   xLabel?: string;
   yLabel?: string;
   cacheId: string;
+  dataset?: string;
 }
