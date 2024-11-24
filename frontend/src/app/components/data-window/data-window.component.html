@@ -1,15 +1,22 @@
 @if (dataset) {
   <div class="window d-flex bg-primary-dark">
-    @if (type === 'explain') {
-      <app-text-output [data]="promptData" class="text-output w-100 h-100"></app-text-output>
-    } @else if (type === 'visualize') {
-      <app-visualized-data [graphData]="promptData" class="chart w-100 h-100"></app-visualized-data>
-    } @else {
+    @if (isLoading) {
+      <app-spinner></app-spinner>
+    }
+      @if (!promptData) {
       <div class="content h-100 w-100 d-flex justify-content-center align-items-center flex-column">
         <h4 class="title">Dataset is selected</h4>
         <h4 class="title">Please type prompt</h4>
       </div>
     }
+     @else {
+      @if (type === 'explain') {
+        <app-text-output [data]="promptData" class="text-output w-100 h-100"></app-text-output>
+      } @else if (type === 'visualize') {
+        <app-visualized-data [graphData]="promptData" class="chart w-100 h-100"></app-visualized-data>
+      }
+    }
+
   </div>
 } @else {
   <div class="window d-flex justify-content-center align-items-center bg-secondary-light">

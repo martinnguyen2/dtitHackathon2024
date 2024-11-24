@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ChatQueryResponseModel } from '../../../models/chat-query-response.model';
+import { ChatQueryService } from '../../../services/chat-query.service';
 
 @Component({
   selector: 'app-text-output',
@@ -10,8 +11,11 @@ import { ChatQueryResponseModel } from '../../../models/chat-query-response.mode
 })
 export class TextOutputComponent {
   @Input() set data(data: ChatQueryResponseModel | undefined) {
-    this.text = data?.textOutput || '';
+    this.prompt = this.chatquery.prompt;
+    this.textArray.push(this.prompt);
+    this.textArray.push(data?.textOutput || '');
   };
-  text = '';
-
+  textArray: string [] = [];
+  prompt: string = '';
+  constructor(private chatquery: ChatQueryService) {}
 }

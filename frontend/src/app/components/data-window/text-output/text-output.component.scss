@@ -16,6 +16,16 @@
   color: black;
 }
 
+.text:nth-child(odd) {
+  font-weight: 600;
+  text-align: right;
+  color: $primary-color-dark;
+}
+
+.text:nth-child(even) {
+  padding-bottom: 1rem!important;
+}
+
 ::-webkit-scrollbar {
   width: 15px;
   height: 8px;

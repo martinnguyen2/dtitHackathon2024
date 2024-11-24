@@ -47,6 +47,7 @@ export class QueryBarComponent implements OnInit {
   }
 
   sendQuery() {
+    this.chatQuery.setIsLoading(true);
     const chatQuery: ChatQueryModel = {
       prompt: this.textAreaInput,
       dataset: this.selectedDataset!,
@@ -54,9 +55,12 @@ export class QueryBarComponent implements OnInit {
       isExpert: !this.isSimplifiedAnswer
     }
     this.chatQuery.postQuery(chatQuery).subscribe((response) => {
-        this.cacheId = response.cacheId;
-        this.promptData = response;
-        this.chatQuery.setPromptData(response);
+      this.chatQuery.setIsLoading(false);
+      this.chatQuery.prompt = this.textAreaInput;
+      this.cacheId = response.cacheId;
+      this.promptData = response;
+      this.chatQuery.setPromptData(response);
+      this.textAreaInput = '';
     });
   }
 }
