@@ -23,6 +23,7 @@ public class ExplainService : IExplainService
         {
             return new ExplainServiceResponse()
             {
+                Type = "explain",
                 TextOutput = "Dataset was not found!",
                 CacheId = "-1"
             };
@@ -54,6 +55,7 @@ public class ExplainService : IExplainService
             Console.WriteLine($"An error occured! {exception.Message}");
             return new ExplainServiceResponse()
             {
+                Type = "explain",
                 TextOutput = "There was an issue while getting the response from OpenAI.",
                 CacheId = "-1"
             };
@@ -63,6 +65,7 @@ public class ExplainService : IExplainService
         {
             return new ExplainServiceResponse()
             {
+                Type = "explain",
                 TextOutput = "There was an issue while getting the response from OpenAI.",
                 CacheId = "-1"
             };
@@ -70,6 +73,7 @@ public class ExplainService : IExplainService
 
         ExplainServiceResponse response = new ExplainServiceResponse()
         {
+            Type = "explain",
             TextOutput = dto.text_output,
             CacheId = dto.cacheId
         };

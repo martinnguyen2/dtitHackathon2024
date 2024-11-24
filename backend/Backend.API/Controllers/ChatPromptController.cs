@@ -20,7 +20,7 @@ namespace Backend.API.Controllers
         }
         
         [HttpPost("submit")]
-        public async Task<ActionResult<ExplainServiceResponse>> SubmitPrompt(PromptDto promptDto) 
+        public async Task<ActionResult<object>> SubmitPrompt(PromptDto promptDto) 
         {
             if (promptDto == null) 
             {

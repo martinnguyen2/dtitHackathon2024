@@ -1,5 +1,3 @@
-using System;
-
 namespace Backend.API.DTOs
 {
     public class ExplainScriptResponseDto

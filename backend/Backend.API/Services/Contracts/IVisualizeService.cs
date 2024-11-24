@@ -1,6 +1,10 @@
-namespace Backend.API.Services.Contracts;
+using Backend.API.DTOs;
+using Backend.Common.Models;
 
-public interface IVisualizeService
+namespace Backend.API.Services.Contracts
 {
-    
+    public interface IVisualizeService
+    {
+        Task<VisualizeServiceResponse?> Visualize(PromptDto promptDto);
+    }
 }
