@@ -4,6 +4,7 @@ import { DatasetsService } from '../../services/datasets.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatIcon } from '@angular/material/icon';
 import { ChatQueryService } from '../../services/chat-query.service';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-tool-bar',
@@ -63,5 +64,36 @@ export class ToolBarComponent implements OnInit {
     this.chatQuery.prompt = '';
     this.selectedDataset = undefined;
     this.predictedModel = 0;
+  }
+
+  save() {
+    console.log("SAVE");
+    const chart = document.querySelector("ngx-chartjs") as HTMLElement;
+    const a = document.createElement("a");
+
+    html2canvas(chart).then((canvas) => {
+      const croppedCanvas = document.createElement("canvas");
+      const croppedCanvasContext = croppedCanvas.getContext("2d");
+
+      croppedCanvas.height = chart.scrollHeight;
+      croppedCanvas.width = chart.scrollWidth;
+
+      croppedCanvasContext?.drawImage(canvas, chart.scrollLeft, chart.scrollTop);
+
+      a.href = croppedCanvas.toDataURL();
+      a.download = "chart.png";
+      a.click();
+    });
+
+    const textArray = (document.querySelector("#text-output") as HTMLDivElement).innerText;
+
+    if (!textArray)
+      return;
+
+    const file = new Blob([textArray], { type: 'text/plain' });
+    a.href = URL.createObjectURL(file);
+    a.download = "chatHistory.txt";
+    a.click();
+    URL.revokeObjectURL(a.href);
   }
 }
