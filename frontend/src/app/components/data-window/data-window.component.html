@@ -15,11 +15,14 @@
       @if (selectedTypes.includes('visualize')) {
         <app-visualized-data [graphData]="promptData" [class.flex-3]="isBothSelected()" class="chart  w-100 h-100"></app-visualized-data>
       }
+      @if (selectedTypes.includes('analyze')) {
+        <app-visualized-data [graphData]="promptData" [class.flex-4]="isBothSelected()" class="chart  w-100 h-100"></app-visualized-data>
+      }
     }
 
   </div>
 } @else {
-  <div class="window d-flex justify-content-center align-items-center bg-secondary-light">
+  <div class="window p d-flex justify-content-center align-items-center bg-secondary-light">
     <h3 class="text">For using prompt input, please select dataset</h3>
   </div>
 }
