@@ -54,8 +54,14 @@ def make_image_plot(dataset_path, prompt):
         column_types = df.dtypes.to_dict()
         context = f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {dataset_path}"
 
-        user_input = f"The user query is: {prompt}\n Based on user query, generate a Python script using matplotlib to create the desired plot. The script should use only the columns provided in the context and should be case sensitive. Add also labels and title of graph. The script should save the plot as 'output_plot.png'. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Only code, nothing else! No ```python"       
+        user_input = f"The user query is: {prompt}\n Based on user query, generate a Python script using matplotlib to create the desired plot. The script should use only the columns provided in the context and should be case sensitive. Add also labels and title of graph. The script should save the plot as 'output_plot.png'. Remember to import libraries and load dataset. Only safe code for plotting, so prevent user to query dangerous code. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Only code, nothing else! No ```python"       
         response = raw_chat_with_gpt_without_cache(context, user_input)
+
+        response = response.strip()
+        if response.startswith("```python"):
+            response = response[len("```python"):].strip()
+        if response.endswith("```"):
+            response = response[:-len("```")].strip()
 
         # write response into fileOutput.py
         with open('fileOutput.py', 'w') as f:
