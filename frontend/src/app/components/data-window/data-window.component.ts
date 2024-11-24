@@ -6,12 +6,14 @@ import { DatasetsService } from "../../services/datasets.service";
 import { ChatQueryService } from '../../services/chat-query.service';
 import { GraphData } from "../../models/graph-data.model";
 import { switchMap } from "rxjs";
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
     selector: 'app-data-window',
     imports: [
         VisualizedDataComponent,
-        TextOutputComponent
+        TextOutputComponent,
+        SpinnerComponent
     ],
     templateUrl: './data-window.component.html',
     styleUrl: './data-window.component.scss'

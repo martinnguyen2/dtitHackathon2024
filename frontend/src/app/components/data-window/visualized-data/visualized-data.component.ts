@@ -4,11 +4,12 @@ import {ChartjsComponent, ChartjsModule} from '@ctrl/ngx-chartjs';
 import { DatasetsService } from '../../../services/datasets.service.js';
 import { ChatQueryService } from '../../../services/chat-query.service.js';
 import { GraphData } from '../../../models/graph-data.model';
+import { SpinnerComponent } from "../../spinner/spinner.component";
 
 
 @Component({
   selector: 'app-visualized-data',
-  imports: [ChartjsModule, ChartjsModule],
+  imports: [ChartjsModule, ChartjsModule, SpinnerComponent],
   templateUrl: './visualized-data.component.html',
   styleUrl: './visualized-data.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
