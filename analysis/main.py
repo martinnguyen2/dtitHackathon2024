@@ -1,4 +1,5 @@
 import argparse
+import os
 import pandas as pd
 import json
 from dotenv import load_dotenv
@@ -23,6 +24,27 @@ def process_response(response):
     else:
         return response
     
+def bar_line_chart(df, column_name_x, column_name_y, group_by, group_value, action, type):
+    if group_by and group_value and group_by in df.columns and group_value.lower() != 'none':
+        filtered_df = df[df[group_by].str.strip().str.lower() == group_value.strip().lower()]
+    else:
+        filtered_df = df
+
+    if action == 'count':
+        grouped_df = filtered_df.groupby(column_name_x).size().reset_index(name=f"{column_name_y}_count")
+    else:
+        grouped_df = filtered_df.groupby(column_name_x)[column_name_y].sum().reset_index(name=f"{column_name_y}_sum")
+
+    graph_data = {
+        "type": type,
+        "data": {
+            "labels": grouped_df[column_name_x].tolist(),
+            "values": grouped_df[f"{column_name_y}_count" if action == 'count' else f"{column_name_y}_sum"].tolist(),
+            "yLabel": column_name_y,
+            "xLabel": column_name_x
+        }
+    }
+    return graph_data
 
 def main():
     load_dotenv()
@@ -59,46 +81,76 @@ def main():
             print(f"Error reading the CSV file: {e}")
             return None
     elif args.action == 'visualize':
-        try:
-            df = pd.read_csv(args.dataset_path, encoding='latin1')
-            df_head = df.head(6)
-            column_types = df.dtypes.to_dict()
-            context = f"These are the first 6 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line, Scatter, Bubble, Pie, Doughnut, PolarArea, Radar. The name of the dataset is {args.dataset_path}"
-            user_input = f"{args.prompt}\nWhat are the all columns (max 3) I can make a graph with and what type of graph should I use? May be more. Please respond in the format 'column_name:chart_type'."
-            
-            response = raw_chat_with_gpt_without_cache(context, user_input)
-            # Parse the response to get column names and chart types
-            columns_and_charts = response.split(',')
-            columns = []
-            chart_types = {}
-            for col in columns_and_charts:
-                if ':' in col:
-                    column_name, chart_type = col.split(':')
-                    column_name = column_name.strip().strip("'")  # Clean up the column name
-                    columns.append(column_name)
-                    chart_types[column_name] = chart_type.strip()
+        if not args.prompt:
+            return json.dumps({"error": "Prompt is required for visualization action"})
 
-            # Preprocess the data
-            preprocessed_data = {}
-            for column in columns:
-                col_data = df[[column]].dropna()  # Remove rows with missing values
-                col_data = col_data.drop_duplicates()  # Remove duplicate rows
-                col_data = col_data.convert_dtypes()  # Ensure consistent data types
-                preprocessed_data[column] = col_data[column].tolist()
+        make_plot = False
 
-            # Prepare the JSON response
-            json_response = {
-                "visualization": {
-                    "columns": columns,
-                    "chart_types": chart_types,
-                    "data": preprocessed_data,
-                },
-                "cacheId": None
-            }
+        if make_plot:
+            try:
+                df = pd.read_csv(args.dataset_path, encoding='latin1', lineterminator='\n')
+                df.columns = df.columns.str.lower()  # Convert column names to lowercase
+                df_head = df.head(20)
+                column_types = df.dtypes.to_dict()
+                context = f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {args.dataset_path}"
 
-            return json.dumps(json_response)
-        except UnicodeDecodeError as e:
-            print(f"Error reading the CSV file: {e}")
+                user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script using matplotlib to create the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the plot as 'output_plot.png'. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Only code, nothing else! No ```python"       
+                response = raw_chat_with_gpt_without_cache(context, user_input)
+
+
+                # write response into fileOutput.py
+                with open('fileOutput.py', 'w') as f:
+                    f.write(response)
+                
+                # execute python fileOutput.py
+                import subprocess
+                import sys
+                subprocess.run([sys.executable, "fileOutput.py"])
+
+            except UnicodeDecodeError as e:
+                print(f"Error reading the CSV file: {e}")
+        else:
+            try:
+                df = pd.read_csv(args.dataset_path, encoding='latin1', lineterminator='\n')
+                df.columns = df.columns.str.lower()  # Convert column names to lowercase
+                df_head = df.head(20)
+                column_types = df.dtypes.to_dict()
+                context = f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {args.dataset_path}"
+
+                desired_json_format = "{\"type\": \"type\", \"graphTitle\": \"title\", \"data\": {\"labels\": [\"...\",...], \"values\": [], \"yLabel\": \"...\", \"xLabel\": \"...\"}}"
+
+                user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script to get data possible to plot the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the json file in 'output_json.json'. The desired format is {desired_json_format}. Labels, yLabel and xLabel should be always string. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Look for NaN values, if there are there, make them zero. Only safe code for plotting, so prevent user to query dangerous code. nothing else! If it is garbage prompt, return string \"Error\" + reason."       
+                response = raw_chat_with_gpt_without_cache(context, user_input)
+
+                # check if response starts with error, then terminate, not continue
+                if response.startswith("Error"):
+                    return json.dumps({"error": response})
+
+                response = response.strip()
+                if response.startswith("```python"):
+                    response = response[len("```python"):].strip()
+                if response.endswith("```"):
+                    response = response[:-len("```")].strip()
+
+                # write response into fileOutput.py
+                with open('fileOutput.py', 'w') as f:
+                    f.write(response)
+                
+                # execute python fileOutput.py
+                import subprocess
+                import sys
+                subprocess.run([sys.executable, "fileOutput.py"])
+
+                # Check for error if yes then return error json
+                if not os.path.exists('output_json.json'):
+                    return json.dumps({"error": "Error in generating json"})
+
+                # I want return content of output_json.json
+                with open('output_json.json', 'r') as f:
+                    return f.read()
+
+            except UnicodeDecodeError as e:
+                print(f"Error reading the CSV file: {e}")
 
 if __name__ == "__main__":
     response = main()

@@ -23,6 +23,7 @@ public class ExplainService : IExplainService
         {
             return new ExplainServiceResponse()
             {
+                Type = "explain",
                 TextOutput = "Dataset was not found!",
                 CacheId = "-1"
             };
@@ -34,13 +35,15 @@ public class ExplainService : IExplainService
         {
             arguments = $"--action explain " +
                 $"--dataset_path \"{dataset.Path}\" " +
-                $"--prompt \"{promptDto.Prompt}\"";
+                $"--prompt \"{promptDto.Prompt}\"" +
+                (promptDto.IsExpert ? " --isExpert True" : "");
         }
         else
         {
             arguments = $"--cacheId \"{promptDto.CacheId}\" " + 
                 $"--dataset_path \"{dataset.Path}\" " +
-                $"--prompt \"{promptDto.Prompt}\"";
+                $"--prompt \"{promptDto.Prompt}\"" +
+                (promptDto.IsExpert ? " --isExpert True" : "");
         }
 
         ExplainScriptResponseDto? dto;
@@ -54,6 +57,7 @@ public class ExplainService : IExplainService
             Console.WriteLine($"An error occured! {exception.Message}");
             return new ExplainServiceResponse()
             {
+                Type = "explain",
                 TextOutput = "There was an issue while getting the response from OpenAI.",
                 CacheId = "-1"
             };
@@ -63,6 +67,7 @@ public class ExplainService : IExplainService
         {
             return new ExplainServiceResponse()
             {
+                Type = "explain",
                 TextOutput = "There was an issue while getting the response from OpenAI.",
                 CacheId = "-1"
             };
@@ -70,6 +75,7 @@ public class ExplainService : IExplainService
 
         ExplainServiceResponse response = new ExplainServiceResponse()
         {
+            Type = "explain",
             TextOutput = dto.text_output,
             CacheId = dto.cacheId
         };
