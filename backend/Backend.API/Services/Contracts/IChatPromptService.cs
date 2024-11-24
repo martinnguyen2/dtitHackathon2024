@@ -6,6 +6,6 @@ namespace Backend.API.Services.Contracts
 {
     public interface IChatPromptService
     {
-        Task<ExplainServiceResponse> Submit(PromptDto promptDto, ActionEnum action);
+        Task<object> Submit(PromptDto promptDto, ActionEnum action);
     }
 }
