@@ -8,9 +8,9 @@ import { DatasetModel } from '../models/dataset.model';
   providedIn: 'root'
 })
 export class DatasetsService {
-  private selectedDataset = new ReplaySubject<DatasetModel>(1);
+  private selectedDataset = new ReplaySubject<DatasetModel | undefined>(1);
   selectedDataset$ = this.selectedDataset.asObservable();
-  private predictiveSet: number = 0; 
+  private predictiveSet: number = 0;
 
   constructor(private http: HttpClient) { }
 
@@ -22,7 +22,7 @@ export class DatasetsService {
     return this.http.post<{message:string}>(environment.baseUrl + "/api/Datasets", input)
   }
 
-  setDataset(dataset: DatasetModel) {
+  setDataset(dataset: DatasetModel | undefined) {
     this.selectedDataset.next(dataset);
   }
 

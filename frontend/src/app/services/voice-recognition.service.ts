@@ -45,9 +45,7 @@ export class VoiceRecognitionService {
             this.wordConcat();
             if (this.isStoppedAutomatically) {
                 this.recognition.stop();
-                console.log('stopped automatically!!');
                 this.recognition.start();
-                console.log('started automatically!!');
                 this.isStoppedAutomatically = true;
             }
         });
@@ -57,7 +55,6 @@ export class VoiceRecognitionService {
         if (!this.isStarted) {
             this.recognition.start();
             this.isStarted = true;
-            console.log('Speech recognition started');
         }
         return true;
     }
@@ -67,7 +64,6 @@ export class VoiceRecognitionService {
             this.wordConcat();
             this.recognition.stop();
             this.isStarted = false;
-            console.log('End speech recognition by user');
         }
 
         this.tempWords = '';

@@ -1,60 +1,62 @@
 @import "../../../styles.scss";
 
 .input-wrapper {
-    position: relative;
-    background-color: $secondary-color;
+  position: relative;
+  background-color: $secondary-color;
+  border-radius: 1rem;
+  height: max-content;
+  width: 98%;
+
+  .checkbox-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.25rem;
     border-radius: 1rem;
-    height: max-content;
 
-    .checkbox-wrapper {
-        position: absolute;
-        top: 0;
-        left: 0;
-        padding: 0.25rem;
-        border-radius: 1rem;
-
-        label {
-            font-weight: 500;
-            margin-left: 0.25rem;
-            max-width: 50rem;
-            font-size: 0.75rem;
-        }
-
-        input {
-            background-color: red;
-
-            &:checked {
-                color: $primary-color-dark;
-                border: #c2c2c2;
-            }
-        }
+    label {
+      font-weight: 500;
+      margin-left: 0.25rem;
+      max-width: 50rem;
+      font-size: 0.75rem;
     }
 
-    textarea{
-        font-size: 1rem;
-        height: 1.75rem;
-        font-weight: 400;
-        resize: none;
-        margin-right: 0.75rem;
+    input {
+      background-color: red;
 
-        &:focus{
-            outline: none;
-        }
-        &::placeholder{
-           color: black;
-        }
+      &:checked {
+        color: $primary-color-dark;
+        border: #c2c2c2;
+      }
+    }
+  }
 
+  textarea {
+    font-size: 1rem;
+    height: 1.75rem;
+    font-weight: 400;
+    resize: none;
+    margin-right: 0.75rem;
+
+    &:focus {
+      outline: none;
     }
 
-    button{
-        color: white;
-        background-color: $primary-color-dark;
+    &::placeholder {
+      color: black;
     }
 
-    .mic-btn {
-      background-color: #f4d0b5;
-      margin-right: 5px;
-    }
+  }
+
+  button {
+    color: white;
+    background-color: $primary-color-dark;
+  }
+
+  .mic-btn {
+    background-color: #f4d0b5;
+    margin-right: 5px;
+  }
 }
 
 .disabled-input {
@@ -67,10 +69,10 @@
 
 .disabled-button {
   cursor: not-allowed;
-  background-color: #c2c2c2!important;
-  color: white!important;
+  background-color: #c2c2c2 !important;
+  color: white !important;
 }
 
-input[type=checkbox]{
+input[type=checkbox] {
   accent-color: $primary-color-dark
 }
