@@ -35,12 +35,14 @@ public class ExplainService : IExplainService
         {
             arguments = $"--action explain " +
                 $"--dataset_path \"{dataset.Path}\" " +
+                $"--isExpert {(promptDto.IsExpert ? "True" : "False")} " +
                 $"--prompt \"{promptDto.Prompt}\"";
         }
         else
         {
             arguments = $"--cacheId \"{promptDto.CacheId}\" " + 
                 $"--dataset_path \"{dataset.Path}\" " +
+                $"--isExpert {(promptDto.IsExpert ? "True" : "False")} " +
                 $"--prompt \"{promptDto.Prompt}\"";
         }
 
