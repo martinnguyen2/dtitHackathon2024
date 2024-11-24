@@ -7,6 +7,8 @@ import { NgClass } from '@angular/common';
 import { DatasetModel } from '../../models/dataset.model';
 import { ChatQueryModel } from '../../models/chat-query.model';
 import { ChatQueryResponseModel } from '../../models/chat-query-response.model';
+import { VoiceRecognitionService } from '../../services/voice-recognition.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-query-bar',
@@ -28,10 +30,14 @@ export class QueryBarComponent implements OnInit {
   isDatasetSelected = false;
   cacheId = '';
   isSimplifiedAnswer = false;
+  micIcon: string = 'mic';
+  textRecognitionSubscribe$: Subscription = new Subscription();
+
+  recognizingVoice: boolean = false;
 
   promptData: ChatQueryResponseModel | undefined;
 
-  constructor(private chatQuery: ChatQueryService, private datasetsService: DatasetsService) {
+  constructor(private chatQuery: ChatQueryService, private datasetsService: DatasetsService, private voiceRecognitionService: VoiceRecognitionService) {
   }
 
   ngOnInit() {
@@ -39,11 +45,21 @@ export class QueryBarComponent implements OnInit {
       this.selectedDataset = dataset;
       this.isDatasetSelected = !!dataset;
     });
+    this.voiceRecognitionService.init();
   }
 
   resizeTextArea() {
     this.elRef!.nativeElement.style.height = '0';
     this.elRef!.nativeElement.style.height = this.elRef!.nativeElement.scrollHeight + 'px';
+  }
+
+  toggleMic() {
+    this.micIcon = this.micIcon === 'mic' ? 'mic_off' : 'mic';
+    if (this.micIcon === 'mic') {
+      this.stopService();
+    } else {
+      this.startService();
+    }
   }
 
   sendQuery() {
@@ -62,5 +78,25 @@ export class QueryBarComponent implements OnInit {
       this.chatQuery.setPromptData(response);
       this.textAreaInput = '';
     });
+  }
+
+  public startService() {
+    this.recognizingVoice = this.voiceRecognitionService.start() === true ? true : false;
+
+    if (!this.textAreaInput) {
+        this.voiceRecognitionService.init();
+    }
+
+    this.textRecognitionSubscribe$ = this.voiceRecognitionService.textChanged.subscribe((text) => {
+        this.textAreaInput = text;
+    });
+  }
+
+  public stopService() {
+      this.recognizingVoice = this.voiceRecognitionService.stop() === false ? false : true;
+
+      if (this.textRecognitionSubscribe$) {
+          this.textRecognitionSubscribe$.unsubscribe();
+      }
   }
 }
