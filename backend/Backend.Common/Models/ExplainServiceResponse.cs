@@ -5,5 +5,6 @@ namespace Backend.Common.Models
         public required string Type { get; set; }
         public required string TextOutput { get; set; }
         public required string CacheId { get; set; }
+        public string? Dataset { get; set; }
     }
 }

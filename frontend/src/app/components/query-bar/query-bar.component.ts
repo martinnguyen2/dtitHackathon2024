@@ -78,6 +78,17 @@ export class QueryBarComponent implements OnInit {
       this.promptData = response;
       this.chatQuery.setPromptData(response);
       this.textAreaInput = '';
+
+      if (response.dataset)
+      {
+        console.log(response.dataset);
+        const dataset: DatasetModel = {
+          name: response.dataset
+        };
+
+        this.datasetsService.setDataset(dataset);
+        console.log(this.datasetsService.selectedDataset$);
+      }
     });
   }
 

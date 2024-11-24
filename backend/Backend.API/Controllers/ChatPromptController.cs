@@ -41,8 +41,8 @@ namespace Backend.API.Controllers
             
             var action = await ResolveActionFromPrompt(promptDto.Prompt);
             
-            var resultJson = await _chatPromptService.Submit(promptDto, action);
-            // TODO: Tu potrebujeme pridat datasetname aby frontend vedel namapovat dataset v liste
+            dynamic resultJson = await _chatPromptService.Submit(promptDto, action);
+            resultJson.Dataset = promptDto.Dataset.Name;
             return resultJson;
         }
         

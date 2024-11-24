@@ -32,25 +32,22 @@ public class DatasetResolverService : IDatasetResolverService
         var availableDatasets = datasets.Select(x => x.Name).ToList();
         
         var availableDatasetsString = string.Join(", ", availableDatasets.Select(x => $"\"{x}\""));
-        string masterPrompt = $"Determine which one of allowed actions specified in context will user prompt be requesting by its semantic. The returned value can be just enum name, nothing else.";
-        string context = $"Available dataset files are: {availableDatasetsString}. The user prompt is expecting to open some dataset. If you find any possible match, then return the name of the dataset - only the name, nothing else.";
+        string masterPrompt = $"Determine which one of allowed dataset names will user prompt be requesting by its semantic. The returned value can be just be from provided dataset names list, nothing else.";
+        string context = $"Available dataset files are: {availableDatasetsString}. The user prompt is expecting to open some dataset. If you find any possible match, then return the first name of the dataset from specified list - only the name, nothing else.";
         
         Console.WriteLine(availableDatasetsString);
         
         var aiResult = await AnalyzePrompt(masterPrompt, context, userPrompt);
 
-        if (availableDatasets.Contains(aiResult))
+        // traverse the datasets and find the one that matches the result
+        foreach (var dataset in datasets)
         {
-            // traverse the datasets and find the one that matches the result
-            foreach (var dataset in datasets)
+            if (dataset.Name == aiResult.TrimStart('\"').TrimEnd('\"'))
             {
-                if (dataset.Name == aiResult)
-                {
-                    return dataset;
-                }
+                return dataset;
             }
         }
-        
+
         throw new Exception("Sorry, I could not find any dataset that matches the user prompt.");
     }
     
