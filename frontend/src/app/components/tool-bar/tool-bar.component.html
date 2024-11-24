@@ -22,9 +22,8 @@
         Predictive model
       </button>
       <ul class="dropdown-menu">
-        <li><a class="dropdown-item">Miro Pele</a></li>
-        <li><a class="dropdown-item">Marian</a></li>
-        <li><a class="dropdown-item">Baba a dzedo</a></li>
+        <li><a class="dropdown-item" (click)="setPredictiveSet(0)">NaN</a></li>
+        <li><a class="dropdown-item"(click)="setPredictiveSet(1)">SVM</a></li>
       </ul>
     </div>
     <input 

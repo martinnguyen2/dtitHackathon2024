@@ -31,6 +31,10 @@ export class ToolBarComponent implements OnInit {
     this.selectedDataset = dataset;
   }
 
+  setPredictiveSet(input: number){
+    this.datasetsService.setPredictiveSet(input);
+  }
+
   onFileSelected(event : any){
 
     const file : File = event.target.files[0];

@@ -52,6 +52,7 @@ export class QueryBarComponent implements OnInit {
       prompt: this.textAreaInput,
       dataset: this.selectedDataset!,
       cacheId: this.cacheId,
+      predictorModel : this.datasetsService.getPredictiveSet(),
       isExpert: !this.isSimplifiedAnswer
     }
     this.chatQuery.postQuery(chatQuery).subscribe((response) => {
