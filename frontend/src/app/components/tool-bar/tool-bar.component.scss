@@ -1,14 +1,13 @@
 @import '../../../styles.scss';
 
 .toolbar {
-  border-radius: 18px;
+  border-radius: 1rem;
   background-color: $secondary-color ;
 }
 
 .btn {
   font-weight: 600;
   border-radius: 20px!important;
-  width: 200px;
 }
 
 .btn-pink {
