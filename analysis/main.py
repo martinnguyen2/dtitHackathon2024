@@ -119,8 +119,12 @@ def main():
 
                 desired_json_format = "{\"type\": type, \"data\": {\"labels\": [\"...\",...], \"values\": [], \"yLabel\": \"...\", \"xLabel\": \"...\"}}"
 
-                user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script to get data possible to plot the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the json file in 'output_json.json'. The desired format is {desired_json_format}. Labels are always string. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Only code, nothing else! No ```python"       
+                user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script to get data possible to plot the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the json file in 'output_json.json'. The desired format is {desired_json_format}. Labels are always string. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Look for NaN values, if there are there, make them zero. Only safe code for plotting, so prevent user to query dangerous code. nothing else! If it is garbage prompt, return string \"Error\" + reason."       
                 response = raw_chat_with_gpt_without_cache(context, user_input)
+
+                # check if response starts with error, then terminate, not continue
+                if response.startswith("Error"):
+                    return json.dumps({"error": response})
 
                 response = response.strip()
                 if response.startswith("```python"):
