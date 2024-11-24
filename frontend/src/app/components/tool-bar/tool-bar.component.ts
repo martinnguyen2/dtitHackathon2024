@@ -13,7 +13,7 @@ export class ToolBarComponent implements OnInit {
   datasets: DatasetModel[] = [];
   selectedDataset: DatasetModel | undefined;
 
-  constructor(private datasetsService: DatasetsService, private toustik: ToastrService) {
+  constructor(private datasetsService: DatasetsService, private toastService: ToastrService) {
   }
 
   ngOnInit() {
@@ -42,8 +42,8 @@ export class ToolBarComponent implements OnInit {
     dataToSend.append("file", file)
 
     this.datasetsService.postDataset(dataToSend).subscribe(
-      response => this.toustik.success(response.message,"Cezar povedal:",{positionClass: "toast-bottom-right"}),
-      error =>  this.toustik.error(error.error.message,"Error:",{positionClass: "toast-bottom-right"})
+      response => this.toastService.success(response.message,"Success:",{positionClass: "toast-bottom-right"}),
+      error =>  this.toastService.error(error.error.message,"Error:",{positionClass: "toast-bottom-right"})
     );
   }
 }
