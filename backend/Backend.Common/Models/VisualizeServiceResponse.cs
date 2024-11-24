@@ -10,5 +10,7 @@ namespace Backend.Common.Models
         public required List<GraphData> GraphData { get; set; }
         public required string XLabel { get; set; }
         public required string YLabel { get; set; }
+
+        public List<GraphData>? PredictedGraphData { get; set; }
     }
 }

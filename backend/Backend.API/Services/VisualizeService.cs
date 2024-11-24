@@ -49,6 +49,7 @@ namespace Backend.API.Services
             }
 
             List<GraphData> graphDatas = [];
+            List<GraphData>? predictedGraphDatas = [];
 
             for (int i = 0; i < dto.data.labels.Length; i++)
             {
@@ -61,6 +62,20 @@ namespace Backend.API.Services
                 );
             }
 
+            if (dto.predictedData != null)
+            {
+                for (int i = 0; i < dto.predictedData?.labels?.Length; i++)
+                {
+                    predictedGraphDatas.Add(
+                        new GraphData
+                        {
+                            Label = dto.predictedData.labels[i],
+                            Value = dto.predictedData.values![i]
+                        }
+                    );
+                }
+            }
+
             VisualizeServiceResponse response = new VisualizeServiceResponse
             {
                 Type = "visualize",
@@ -69,7 +84,8 @@ namespace Backend.API.Services
                 ChartType = dto.type,
                 GraphData = graphDatas,
                 XLabel = dto.data.xLabel,
-                YLabel = dto.data.yLabel
+                YLabel = dto.data.yLabel,
+                PredictedGraphData = predictedGraphDatas ?? null
             };
 
             return response;
