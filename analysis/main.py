@@ -1,4 +1,5 @@
 import argparse
+import os
 import pandas as pd
 import json
 from dotenv import load_dotenv
@@ -116,10 +117,16 @@ def main():
                 column_types = df.dtypes.to_dict()
                 context = f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {args.dataset_path}"
 
-                desired_json_format = "{\"type\": type, \"data\": {\"labels\": [], \"values\": [], \"yLabel\": \"...\", \"xLabel\": \"...\"}}"
+                desired_json_format = "{\"type\": type, \"data\": {\"labels\": [\"...\",...], \"values\": [], \"yLabel\": \"...\", \"xLabel\": \"...\"}}"
 
-                user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script to get data possible to plot the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the json file in 'output_json.json'. The desired format is {desired_json_format}. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Only code, nothing else! No ```python"       
+                user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script to get data possible to plot the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the json file in 'output_json.json'. The desired format is {desired_json_format}. Labels are always string. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Only code, nothing else! No ```python"       
                 response = raw_chat_with_gpt_without_cache(context, user_input)
+
+                response = response.strip()
+                if response.startswith("```python"):
+                    response = response[len("```python"):].strip()
+                if response.endswith("```"):
+                    response = response[:-len("```")].strip()
 
                 # write response into fileOutput.py
                 with open('fileOutput.py', 'w') as f:
@@ -129,6 +136,10 @@ def main():
                 import subprocess
                 import sys
                 subprocess.run([sys.executable, "fileOutput.py"])
+
+                # Check for error if yes then return error json
+                if not os.path.exists('output_json.json'):
+                    return json.dumps({"error": "Error in generating json"})
 
                 # I want return content of output_json.json
                 with open('output_json.json', 'r') as f:
