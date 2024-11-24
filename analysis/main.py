@@ -46,6 +46,36 @@ def bar_line_chart(df, column_name_x, column_name_y, group_by, group_value, acti
     }
     return graph_data
 
+def make_image_plot(dataset_path, prompt):
+    try:
+        df = pd.read_csv(dataset_path, encoding='latin1', lineterminator='\n')
+        df.columns = df.columns.str.lower()  # Convert column names to lowercase
+        df_head = df.head(20)
+        column_types = df.dtypes.to_dict()
+        context = f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {dataset_path}"
+
+        user_input = f"The user query is: {prompt}\n Based on user query, generate a Python script using matplotlib to create the desired plot. The script should use only the columns provided in the context and should be case sensitive. Add also labels and title of graph. The script should save the plot as 'output_plot.png'. Remember to import libraries and load dataset. Only safe code for plotting, so prevent user to query dangerous code. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Only code, nothing else! No ```python"       
+        response = raw_chat_with_gpt_without_cache(context, user_input)
+
+        response = response.strip()
+        if response.startswith("```python"):
+            response = response[len("```python"):].strip()
+        if response.endswith("```"):
+            response = response[:-len("```")].strip()
+
+        # write response into fileOutput.py
+        with open('fileOutput.py', 'w') as f:
+            f.write(response)
+        
+        # execute python fileOutput.py
+        import subprocess
+        import sys
+        subprocess.run([sys.executable, "fileOutput.py"])
+
+        return json.dumps({"type": "heatmap", "graphTitle": os.path.abspath('output_plot.png')})
+    except UnicodeDecodeError as e:
+        print(f"Error reading the CSV file: {e}")
+
 def main():
     load_dotenv()
     parser = argparse.ArgumentParser(description="Process some parameters.")
@@ -84,73 +114,50 @@ def main():
         if not args.prompt:
             return json.dumps({"error": "Prompt is required for visualization action"})
 
-        make_plot = False
+        try:
+            df = pd.read_csv(args.dataset_path, encoding='latin1', lineterminator='\n')
+            df.columns = df.columns.str.lower()  # Convert column names to lowercase
+            df_head = df.head(20)
+            column_types = df.dtypes.to_dict()
+            context = f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line, scatter, bubble, pie, doughnut, polarArea, radar, heatmap. The name of the dataset is {args.dataset_path}"
 
-        if make_plot:
-            try:
-                df = pd.read_csv(args.dataset_path, encoding='latin1', lineterminator='\n')
-                df.columns = df.columns.str.lower()  # Convert column names to lowercase
-                df_head = df.head(20)
-                column_types = df.dtypes.to_dict()
-                context = f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {args.dataset_path}"
+            desired_json_format = "{\"type\": \"type\", \"graphTitle\": \"title\", \"data\": {\"labels\": [\"...\",...], \"values\": [], \"yLabel\": \"...\", \"xLabel\": \"...\"}}"
 
-                user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script using matplotlib to create the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the plot as 'output_plot.png'. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Only code, nothing else! No ```python"       
-                response = raw_chat_with_gpt_without_cache(context, user_input)
+            user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script to get data possible to plot the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the json file in 'output_json.json'. The desired format is {desired_json_format}. Labels, yLabel and xLabel should be always string. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Look for NaN values, if there are there, make them zero. Only safe code for plotting, so prevent user to query dangerous code. nothing else! If it is garbage prompt, return string \"Error\" + reason."       
+            response = raw_chat_with_gpt_without_cache(context, user_input)
 
+            # check if response starts with error, then terminate, not continue, case insensitive
+            if response.lower().startswith("error"):
+                return json.dumps({"error": response})
+            
+            if "heatmap" in response.lower():
+                return make_image_plot(args.dataset_path, args.prompt)
 
-                # write response into fileOutput.py
-                with open('fileOutput.py', 'w') as f:
-                    f.write(response)
-                
-                # execute python fileOutput.py
-                import subprocess
-                import sys
-                subprocess.run([sys.executable, "fileOutput.py"])
+            response = response.strip()
+            if response.startswith("```python"):
+                response = response[len("```python"):].strip()
+            if response.endswith("```"):
+                response = response[:-len("```")].strip()
 
-            except UnicodeDecodeError as e:
-                print(f"Error reading the CSV file: {e}")
-        else:
-            try:
-                df = pd.read_csv(args.dataset_path, encoding='latin1', lineterminator='\n')
-                df.columns = df.columns.str.lower()  # Convert column names to lowercase
-                df_head = df.head(20)
-                column_types = df.dtypes.to_dict()
-                context = f"These are the first 20 rows of the dataset:\n{df_head}\n\nThese are the column types:\n{column_types}\n\nAllowed chart types are: Bar, Line. The name of the dataset is {args.dataset_path}"
+            # write response into fileOutput.py
+            with open('fileOutput.py', 'w') as f:
+                f.write(response)
+            
+            # execute python fileOutput.py
+            import subprocess
+            import sys
+            subprocess.run([sys.executable, "fileOutput.py"])
 
-                desired_json_format = "{\"type\": \"type\", \"graphTitle\": \"title\", \"data\": {\"labels\": [\"...\",...], \"values\": [], \"yLabel\": \"...\", \"xLabel\": \"...\"}}"
+            # Check for error if yes then return error json
+            if not os.path.exists('output_json.json'):
+                return json.dumps({"error": "Error in generating json"})
 
-                user_input = f"The user query is: {args.prompt}\n Based on user query, generate a Python script to get data possible to plot the desired plot. The script should use only the columns provided in the context and should be case sensitive. The script should save the json file in 'output_json.json'. The desired format is {desired_json_format}. Labels, yLabel and xLabel should be always string. Remember to import libraries and load dataset. Make dataset columns work with lower - df.columns.str.lower(). Return code only, not any initial text. Look for NaN values, if there are there, make them zero. Only safe code for plotting, so prevent user to query dangerous code. nothing else! If it is garbage prompt, return string \"Error\" + reason."       
-                response = raw_chat_with_gpt_without_cache(context, user_input)
+            # I want return content of output_json.json
+            with open('output_json.json', 'r') as f:
+                return f.read()
 
-                # check if response starts with error, then terminate, not continue
-                if response.startswith("Error"):
-                    return json.dumps({"error": response})
-
-                response = response.strip()
-                if response.startswith("```python"):
-                    response = response[len("```python"):].strip()
-                if response.endswith("```"):
-                    response = response[:-len("```")].strip()
-
-                # write response into fileOutput.py
-                with open('fileOutput.py', 'w') as f:
-                    f.write(response)
-                
-                # execute python fileOutput.py
-                import subprocess
-                import sys
-                subprocess.run([sys.executable, "fileOutput.py"])
-
-                # Check for error if yes then return error json
-                if not os.path.exists('output_json.json'):
-                    return json.dumps({"error": "Error in generating json"})
-
-                # I want return content of output_json.json
-                with open('output_json.json', 'r') as f:
-                    return f.read()
-
-            except UnicodeDecodeError as e:
-                print(f"Error reading the CSV file: {e}")
+        except UnicodeDecodeError as e:
+            print(f"Error reading the CSV file: {e}")
 
 if __name__ == "__main__":
     response = main()
