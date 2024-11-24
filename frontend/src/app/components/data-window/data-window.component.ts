@@ -43,6 +43,6 @@ export class DataWindowComponent implements OnInit {
     }
 
     isBothSelected():boolean {
-        return this.selectedTypes.includes('explain') && this.selectedTypes.includes('visualize');
+        return this.selectedTypes.includes('explain') && this.selectedTypes.includes('visualize') && this.selectedTypes.includes('analyze');
     }
 }
