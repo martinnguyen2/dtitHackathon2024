@@ -17,13 +17,13 @@
   </div>
 
   <div class="right-side d-flex">
-    <div class="chip">{{this.predictedModel ? "SVM" : "NaN" }}</div> 
+    <div class="chip">{{this.predictedModel ? "SVM" : "NON" }}</div> 
     <div class="dropdown model px-3">
       <button class="btn btn-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         Predictive model
       </button>
       <ul class="dropdown-menu">
-        <li><a class="dropdown-item" (click)="setPredictiveSet(0)">NaN</a></li>
+        <li><a class="dropdown-item" (click)="setPredictiveSet(0)">NON</a></li>
         <li><a class="dropdown-item" (click)="setPredictiveSet(1)">SVM</a></li>
       </ul>
     </div>
