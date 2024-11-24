@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 export class ToolBarComponent implements OnInit {
   datasets: DatasetModel[] = [];
   selectedDataset: DatasetModel | undefined;
+  predictedModel:number = 0;
 
   constructor(private datasetsService: DatasetsService, private toastService: ToastrService) {
   }
@@ -32,6 +33,7 @@ export class ToolBarComponent implements OnInit {
   }
 
   setPredictiveSet(input: number){
+    this.predictedModel = input;
     this.datasetsService.setPredictiveSet(input);
   }
 
