@@ -9,7 +9,7 @@ import { SpinnerComponent } from "../../spinner/spinner.component";
 
 @Component({
   selector: 'app-visualized-data',
-  imports: [ChartjsModule, ChartjsModule, SpinnerComponent],
+  imports: [ChartjsModule, ChartjsModule],
   templateUrl: './visualized-data.component.html',
   styleUrl: './visualized-data.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

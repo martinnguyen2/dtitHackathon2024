@@ -19,6 +19,9 @@ import {
   Legend, PointElement,
 } from 'chart.js';
 import {provideHttpClient} from '@angular/common/http';
+import { provideToastr } from 'ngx-toastr';
+import { provideAnimations } from '@angular/platform-browser/animations';
+
 
 Chart.register(PointElement, LineElement, LineController, ArcElement, PieController, BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -32,7 +35,7 @@ Chart.register(PointElement, LineElement, LineController, ArcElement, PieControl
     AppRoutingModule,
     HomeComponent,
   ],
-  providers: [provideHttpClient()],
+  providers: [provideHttpClient(),provideToastr(),provideAnimations()],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

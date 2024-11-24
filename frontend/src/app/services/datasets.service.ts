@@ -16,8 +16,8 @@ export class DatasetsService {
     return this.http.get<DatasetModel[]>(environment.baseUrl + '/api/Datasets');
   }
 
-  public postDataset(input : FormData):Observable<string>{
-    return this.http.post<string>(environment.baseUrl + "/api/Datasets", input)
+  public postDataset(input : FormData):Observable<{message:string}>{
+    return this.http.post<{message:string}>(environment.baseUrl + "/api/Datasets", input)
   }
 
   setDataset(dataset: DatasetModel) {

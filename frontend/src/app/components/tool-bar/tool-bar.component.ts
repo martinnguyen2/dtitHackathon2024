@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DatasetModel } from '../../models/dataset.model';
 import { DatasetsService } from '../../services/datasets.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-tool-bar',
@@ -12,7 +13,7 @@ export class ToolBarComponent implements OnInit {
   datasets: DatasetModel[] = [];
   selectedDataset: DatasetModel | undefined;
 
-  constructor(private datasetsService: DatasetsService) {
+  constructor(private datasetsService: DatasetsService, private toustik: ToastrService) {
   }
 
   ngOnInit() {
@@ -41,8 +42,8 @@ export class ToolBarComponent implements OnInit {
     dataToSend.append("file", file)
 
     this.datasetsService.postDataset(dataToSend).subscribe(
-      response => console.log(response),
-      error =>  console.log(error.error.message)
+      response => this.toustik.success(response.message,"Cezar povedal:",{positionClass: "toast-bottom-right"}),
+      error =>  this.toustik.error(error.error.message,"Error:",{positionClass: "toast-bottom-right"})
     );
   }
 }
